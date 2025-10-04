@@ -1,7 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 // In-memory storage for development (would be replaced with database in production)
-let experiments: any[] = [
+const experiments: { 
+  id: string;
+  name: string;
+  description: string;
+  status: string;
+  created_at: string;
+  updated_at: string;
+  evaluation_runs_count: number;
+}[] = [
   {
     id: "exp_1",
     name: "Q&A Model Evaluation",

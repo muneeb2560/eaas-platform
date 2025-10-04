@@ -1,4 +1,4 @@
-import { renderWithProviders, screen, fireEvent, waitFor } from '../test-utils'
+import { renderWithProviders, screen, fireEvent } from '../test-utils'
 import { Button } from '@/components/ui/Button'
 
 describe('Button Component', () => {

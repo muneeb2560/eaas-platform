@@ -1,4 +1,4 @@
-import { renderWithProviders, screen, fireEvent, waitFor } from '../test-utils'
+import { renderWithProviders, screen } from '../test-utils'
 import { Card } from '@/components/ui/Card'
 
 describe('Card Component', () => {

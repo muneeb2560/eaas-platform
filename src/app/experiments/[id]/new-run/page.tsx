@@ -9,7 +9,13 @@ interface Rubric {
   id: string;
   name: string;
   description: string;
-  criteria: Record<string, any>;
+  criteria: Record<string, number>;
+}
+
+interface Experiment {
+  id: string;
+  name: string;
+  description: string;
 }
 
 export default function NewEvaluationRunPage() {
@@ -17,7 +23,7 @@ export default function NewEvaluationRunPage() {
   const params = useParams();
   const experimentId = params.id as string;
   
-  const [experiment, setExperiment] = useState<any>(null);
+  const [experiment, setExperiment] = useState<Experiment | null>(null);
   const [rubrics, setRubrics] = useState<Rubric[]>([]);
   const [formData, setFormData] = useState({
     rubric_id: "",

@@ -6,11 +6,29 @@ import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 
+interface EvaluationRun {
+  id: string;
+  status: string;
+  total_samples: number;
+  completed_samples: number;
+  average_score?: number;
+  started_at: string;
+  completed_at?: string | null;
+}
+
+interface Experiment {
+  id: string;
+  name: string;
+  description: string;
+  status: string;
+  created_at: string;
+}
+
 export default function ExperimentDetailsPage() {
   const params = useParams();
   const experimentId = params.id as string;
-  const [experiment, setExperiment] = useState<any>(null);
-  const [evaluationRuns, setEvaluationRuns] = useState<any[]>([]);
+  const [experiment, setExperiment] = useState<Experiment | null>(null);
+  const [evaluationRuns, setEvaluationRuns] = useState<EvaluationRun[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
