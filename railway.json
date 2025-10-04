@@ -5,9 +5,6 @@
   },
   "deploy": {
     "startCommand": "NODE_OPTIONS='--no-deprecation' npm start",
-    "healthcheckPath": "/api/health",
-    "healthcheckTimeout": 600,
-    "healthcheckInterval": 30,
     "restartPolicyType": "always"
   }
 }
