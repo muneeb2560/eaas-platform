@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
@@ -8,7 +8,8 @@ import { Card } from '@/components/ui/Card';
 
 type VerificationStatus = 'loading' | 'success' | 'error' | 'invalid_token' | 'missing_token' | 'server_error';
 
-export default function VerifyEmailPage() {
+// Separate component that uses useSearchParams
+function VerifyEmailContent() {
   const [status, setStatus] = useState<VerificationStatus>('loading');
   const [email, setEmail] = useState<string>('');
   const [message, setMessage] = useState<string>('');
@@ -220,5 +221,38 @@ export default function VerifyEmailPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+// Loading component for Suspense fallback
+function VerifyEmailLoading() {
+  return (
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <div className="w-full max-w-md space-y-8">
+        <div className="text-center">
+          <h1 className="text-3xl font-bold text-white mb-2">Email Verification</h1>
+          <p className="text-gray-300">Confirming your email address</p>
+        </div>
+        <Card className="p-8 bg-gray-800/50 border-gray-700">
+          <div className="text-center">
+            <div className="animate-pulse space-y-4">
+              <div className="w-16 h-16 bg-gray-700/50 rounded-full mx-auto"></div>
+              <div className="h-6 bg-gray-700/50 rounded mx-auto w-3/4"></div>
+              <div className="h-4 bg-gray-700/50 rounded mx-auto w-full"></div>
+              <div className="h-10 bg-gray-700/50 rounded mx-auto w-full"></div>
+            </div>
+          </div>
+        </Card>
+      </div>
+    </div>
+  );
+}
+
+// Main component with Suspense boundary
+export default function VerifyEmailPage() {
+  return (
+    <Suspense fallback={<VerifyEmailLoading />}>
+      <VerifyEmailContent />
+    </Suspense>
   );
 }

@@ -498,7 +498,11 @@ export default function UploadPage() {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => window.open(file.url, '_blank')}
+                      onClick={() => {
+                        if (typeof window !== 'undefined') {
+                          window.open(file.url, '_blank');
+                        }
+                      }}
                       className="text-blue-400 hover:text-blue-300"
                     >
                       📥 Download
