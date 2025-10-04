@@ -89,7 +89,7 @@
     "url": "https://github.com/your-org/eaas-platform.git"
   },
   "engines": {
-    "node": "18.x || 20.x",
-    "npm": ">=8.0.0"
+    "node": "22.x",
+    "npm": ">=9.0.0"
   }
 }
