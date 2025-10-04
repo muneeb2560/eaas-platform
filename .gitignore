@@ -16,6 +16,28 @@
 # uploads
 /uploads
 
+# temporary files
+*.tmp
+*.temp
+*~
+*.swp
+*.swo
+
+# editor directories and files
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/
+*.iml
+
+# OS files
+.DS_Store
+Thumbs.db
+**/Thumbs.db
+**/.DS_Store
+
 # next.js
 /.next/
 /out/
@@ -26,6 +48,11 @@
 # misc
 .DS_Store
 *.pem
+
+# logs
+*.log
+build-output.log
+final-build.log
 
 # debug
 npm-debug.log*
