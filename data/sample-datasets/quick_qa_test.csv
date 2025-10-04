@@ -1,0 +1,11 @@
+prompt,expected_output,actual_output,category,difficulty
+"What is the capital of Japan?","Tokyo","Tokyo is the capital city of Japan and one of the world's largest metropolitan areas.","geography","easy"
+"Explain what is machine learning","Machine learning is a subset of artificial intelligence that enables computers to learn and make decisions from data without being explicitly programmed for every task.","Machine learning is when computers learn from data to make predictions automatically.","technology","medium"
+"What is 2 + 2?","4","The answer is 4.","mathematics","easy"
+"Who invented the telephone?","Alexander Graham Bell invented the telephone in 1876.","Alexander Graham Bell invented the telephone.","history","easy"
+"What is photosynthesis?","Photosynthesis is the process by which plants use sunlight, water, and carbon dioxide to produce glucose and oxygen.","Plants use sunlight and water to make food and oxygen through photosynthesis.","biology","medium"
+"What is the largest ocean?","The Pacific Ocean is the largest ocean on Earth.","The Pacific Ocean is the biggest ocean.","geography","easy"
+"Explain gravity","Gravity is a fundamental force of attraction between objects with mass, described by Newton's law of universal gravitation and Einstein's general relativity.","Gravity is the force that pulls things toward Earth.","physics","medium"
+"What is democracy?","Democracy is a system of government where power is held by the people, either directly or through elected representatives.","Democracy is when people vote to choose their leaders.","politics","medium"
+"How many sides does a triangle have?","A triangle has three sides.","3 sides","mathematics","easy"
+"What causes rain?","Rain is caused by the water cycle: water evaporates, forms clouds, and precipitates as rain when water droplets become too heavy to remain suspended in the air.","Rain happens when water evaporates, makes clouds, and falls back down.","science","easy"

@@ -1,0 +1,82 @@
+{
+  "id": "qa_accuracy_rubric",
+  "name": "Q&A Accuracy Rubric",
+  "description": "Comprehensive rubric for evaluating question-answer pairs",
+  "version": "1.0",
+  "criteria": [
+    {
+      "name": "accuracy",
+      "description": "Factual correctness of the answer",
+      "weight": 0.4,
+      "scale": {
+        "min": 0,
+        "max": 1,
+        "type": "continuous"
+      },
+      "scoring_guide": {
+        "0.0-0.2": "Completely incorrect or misleading information",
+        "0.2-0.4": "Mostly incorrect with some accurate elements",
+        "0.4-0.6": "Partially correct but missing key information",
+        "0.6-0.8": "Mostly accurate with minor errors",
+        "0.8-1.0": "Completely accurate and factually correct"
+      }
+    },
+    {
+      "name": "completeness",
+      "description": "How thoroughly the answer addresses the question",
+      "weight": 0.3,
+      "scale": {
+        "min": 0,
+        "max": 1,
+        "type": "continuous"
+      },
+      "scoring_guide": {
+        "0.0-0.2": "Answer is incomplete and misses main points",
+        "0.2-0.4": "Answer addresses some aspects but lacks depth",
+        "0.4-0.6": "Answer covers most important points",
+        "0.6-0.8": "Answer is thorough with minor gaps",
+        "0.8-1.0": "Answer is comprehensive and complete"
+      }
+    },
+    {
+      "name": "clarity",
+      "description": "How clear and understandable the answer is",
+      "weight": 0.2,
+      "scale": {
+        "min": 0,
+        "max": 1,
+        "type": "continuous"
+      },
+      "scoring_guide": {
+        "0.0-0.2": "Very unclear or confusing",
+        "0.2-0.4": "Somewhat unclear with ambiguous parts",
+        "0.4-0.6": "Generally clear with some unclear sections",
+        "0.6-0.8": "Clear and easy to understand",
+        "0.8-1.0": "Exceptionally clear and well-articulated"
+      }
+    },
+    {
+      "name": "relevance",
+      "description": "How relevant the answer is to the specific question",
+      "weight": 0.1,
+      "scale": {
+        "min": 0,
+        "max": 1,
+        "type": "continuous"
+      },
+      "scoring_guide": {
+        "0.0-0.2": "Answer is off-topic or irrelevant",
+        "0.2-0.4": "Answer has some relevance but goes off-topic",
+        "0.4-0.6": "Answer is generally relevant",
+        "0.6-0.8": "Answer is highly relevant",
+        "0.8-1.0": "Answer directly and perfectly addresses the question"
+      }
+    }
+  ],
+  "overall_calculation": "weighted_average",
+  "metadata": {
+    "created_by": "EaaS System",
+    "use_case": "General Q&A evaluation",
+    "domain": "general_knowledge"
+  }
+}

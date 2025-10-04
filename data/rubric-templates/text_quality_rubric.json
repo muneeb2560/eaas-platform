@@ -1,0 +1,99 @@
+{
+  "id": "text_quality_rubric",
+  "name": "Text Quality Assessment Rubric",
+  "description": "Comprehensive rubric for evaluating generated text quality",
+  "version": "1.0",
+  "criteria": [
+    {
+      "name": "coherence",
+      "description": "Logical flow and consistency of ideas",
+      "weight": 0.25,
+      "scale": {
+        "min": 0,
+        "max": 1,
+        "type": "continuous"
+      },
+      "scoring_guide": {
+        "0.0-0.2": "Incoherent, contradictory, or nonsensical",
+        "0.2-0.4": "Some logical connection but generally disorganized",
+        "0.4-0.6": "Generally coherent with some logical gaps",
+        "0.6-0.8": "Well-organized and logically consistent",
+        "0.8-1.0": "Exceptionally coherent and well-structured"
+      }
+    },
+    {
+      "name": "fluency",
+      "description": "Natural language flow and readability",
+      "weight": 0.25,
+      "scale": {
+        "min": 0,
+        "max": 1,
+        "type": "continuous"
+      },
+      "scoring_guide": {
+        "0.0-0.2": "Very poor grammar, unnatural phrasing",
+        "0.2-0.4": "Frequent grammatical errors, awkward phrasing",
+        "0.4-0.6": "Generally fluent with minor issues",
+        "0.6-0.8": "Natural and fluent writing",
+        "0.8-1.0": "Exceptionally fluent and polished"
+      }
+    },
+    {
+      "name": "creativity",
+      "description": "Originality and creative expression",
+      "weight": 0.2,
+      "scale": {
+        "min": 0,
+        "max": 1,
+        "type": "continuous"
+      },
+      "scoring_guide": {
+        "0.0-0.2": "Generic, clichéd, or unoriginal",
+        "0.2-0.4": "Somewhat creative but predictable",
+        "0.4-0.6": "Moderately creative with some original elements",
+        "0.6-0.8": "Creative and engaging",
+        "0.8-1.0": "Highly creative and original"
+      }
+    },
+    {
+      "name": "appropriateness",
+      "description": "Suitability for intended purpose and audience",
+      "weight": 0.2,
+      "scale": {
+        "min": 0,
+        "max": 1,
+        "type": "continuous"
+      },
+      "scoring_guide": {
+        "0.0-0.2": "Completely inappropriate for context",
+        "0.2-0.4": "Somewhat inappropriate tone or content",
+        "0.4-0.6": "Generally appropriate with minor issues",
+        "0.6-0.8": "Well-suited for intended purpose",
+        "0.8-1.0": "Perfectly appropriate and well-targeted"
+      }
+    },
+    {
+      "name": "informativeness",
+      "description": "Value and depth of information provided",
+      "weight": 0.1,
+      "scale": {
+        "min": 0,
+        "max": 1,
+        "type": "continuous"
+      },
+      "scoring_guide": {
+        "0.0-0.2": "Provides little to no useful information",
+        "0.2-0.4": "Limited informational value",
+        "0.4-0.6": "Moderately informative",
+        "0.6-0.8": "Highly informative and valuable",
+        "0.8-1.0": "Exceptionally informative and insightful"
+      }
+    }
+  ],
+  "overall_calculation": "weighted_average",
+  "metadata": {
+    "created_by": "EaaS System",
+    "use_case": "General text generation evaluation",
+    "domain": "content_creation"
+  }
+}
