@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+/node_modules 2
 /.pnp
 .pnp.*
 .yarn/*
@@ -48,6 +49,7 @@ Thumbs.db
 # misc
 .DS_Store
 *.pem
+tcp-proxy/
 
 # logs
 *.log
