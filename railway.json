@@ -4,7 +4,7 @@
     "builder": "nixpacks"
   },
   "deploy": {
-    "startCommand": "NODE_OPTIONS='--no-deprecation' npm start",
+    "startCommand": "next start --port $PORT",
     "restartPolicyType": "always"
   }
 }
