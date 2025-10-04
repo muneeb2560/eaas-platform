@@ -1,16 +1,5 @@
 providers = ["node"]
 
-[phases.setup]
-nixPkgs = ["nodejs-22_x", "npm-9_x"]
-
-[phases.install]
-cmd = "npm ci --include=dev"
-
-[phases.build]
-cmd = "npm run build"
-
-[start]
-cmd = "npm start"
-
 [variables]
 NODE_ENV = "production"
+NODE_OPTIONS = "--no-deprecation=punycode"

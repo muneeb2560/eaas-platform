@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: false,
   },
   outputFileTracingRoot: __dirname,
+  output: 'standalone',
   // Remove turbopack config for production builds to avoid Vercel conflicts
   ...(process.env.NODE_ENV === 'development' && {
     turbopack: {

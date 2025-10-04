@@ -1,0 +1,21 @@
+Dockerfile
+.dockerignore
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.next
+.git
+.gitignore
+README.md
+.env
+.env.local
+.env.production.local
+.env.staging.local
+coverage
+.vercel
+**/.DS_Store
+**/Thumbs.db
+uploads
+node_modules 2
+tcp-proxy

@@ -4,7 +4,7 @@
     "builder": "nixpacks"
   },
   "deploy": {
-    "startCommand": "next start --port $PORT",
+    "startCommand": "npm start",
     "restartPolicyType": "always"
   }
 }
