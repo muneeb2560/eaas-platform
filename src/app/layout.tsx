@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { SupabaseProvider } from "@/lib/providers/SupabaseProvider";
@@ -13,12 +13,13 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "EaaS - Evaluation as a Service",
   description: "Platform for automated AI model evaluation with custom rubrics and scoring",
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 1,
-    userScalable: false,
-  },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({

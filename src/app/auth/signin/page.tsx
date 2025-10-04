@@ -1,13 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useAuth } from "@/lib/providers/SupabaseProvider";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { useRouter, useSearchParams } from "next/navigation";
 
-export default function SignInPage() {
+// Separate component that uses useSearchParams
+function SignInForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -185,5 +186,35 @@ export default function SignInPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+// Loading component for Suspense fallback
+function SignInLoading() {
+  return (
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        <Card className="p-8 bg-gray-800/50 border-gray-700">
+          <div className="animate-pulse space-y-6">
+            <div className="h-10 bg-gray-700/50 rounded"></div>
+            <div className="h-px bg-gray-600 my-6"></div>
+            <div className="space-y-4">
+              <div className="h-10 bg-gray-700/50 rounded"></div>
+              <div className="h-10 bg-gray-700/50 rounded"></div>
+              <div className="h-10 bg-gray-700/50 rounded"></div>
+            </div>
+          </div>
+        </Card>
+      </div>
+    </div>
+  );
+}
+
+// Main component with Suspense boundary
+export default function SignInPage() {
+  return (
+    <Suspense fallback={<SignInLoading />}>
+      <SignInForm />
+    </Suspense>
   );
 }
