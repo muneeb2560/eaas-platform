@@ -5,8 +5,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack --port 3002",
-    "build": "next build",
-    "start": "next start -p ${PORT:-3002}",
+    "build": "NODE_OPTIONS='--no-deprecation' next build",
+    "start": "NODE_OPTIONS='--no-deprecation' next start -p ${PORT:-3002}",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
     "type-check": "tsc --noEmit",
@@ -73,7 +73,8 @@
     "glob": "^11.0.0",
     "rimraf": "^6.0.0",
     "@types/react": "^19",
-    "@types/react-dom": "^19"
+    "@types/react-dom": "^19",
+    "punycode": "^2.3.1"
   },
   "keywords": [
     "ai-evaluation",

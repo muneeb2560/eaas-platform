@@ -8,5 +8,8 @@
     "healthcheckPath": "/api/health",
     "healthcheckTimeout": 300,
     "restartPolicyType": "always"
+  },
+  "environments": {
+    "NODE_OPTIONS": "--no-deprecation"
   }
 }
