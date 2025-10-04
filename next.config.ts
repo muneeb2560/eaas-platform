@@ -8,9 +8,12 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: false,
   },
-  turbopack: {
-    root: '/Users/moneebraza/Desktop/FullStack/my-nextjs-app',
-  },
+  // Remove turbopack config for production builds to avoid Vercel conflicts
+  ...(process.env.NODE_ENV === 'development' && {
+    turbopack: {
+      root: '/Users/moneebraza/Desktop/FullStack/my-nextjs-app',
+    },
+  }),
 };
 
 export default nextConfig;

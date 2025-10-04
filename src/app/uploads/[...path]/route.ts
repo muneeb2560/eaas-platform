@@ -5,9 +5,10 @@ import { existsSync } from 'fs';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { path: string[] } }
+  context: { params: Promise<{ path: string[] }> }
 ) {
   try {
+    const params = await context.params;
     // Only serve files in development mode
     const isDevelopmentMode = 
       process.env.NEXT_PUBLIC_SUPABASE_URL === 'https://your-project.supabase.co' ||

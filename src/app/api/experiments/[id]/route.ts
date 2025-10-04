@@ -38,9 +38,12 @@ function getExperiments(): Experiment[] {
 }
 
 // GET /api/experiments/[id] - Get single experiment
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
   try {
-    const { id } = params;
+    const { id } = await context.params;
     const experiments = getExperiments();
     const experiment = experiments.find((exp: Experiment) => exp.id === id);
     
@@ -65,9 +68,12 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 }
 
 // DELETE /api/experiments/[id] - Delete experiment
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
   try {
-    const { id } = params;
+    const { id } = await context.params;
     const experiments = getExperiments();
     const index = experiments.findIndex((exp: Experiment) => exp.id === id);
     
@@ -96,9 +102,12 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
 }
 
 // PUT /api/experiments/[id] - Update experiment
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
   try {
-    const { id } = params;
+    const { id } = await context.params;
     const updates = await request.json();
     const experiments = getExperiments();
     

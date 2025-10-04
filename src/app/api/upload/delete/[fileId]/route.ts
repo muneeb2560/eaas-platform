@@ -14,9 +14,10 @@ const isDevelopmentMode =
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { fileId: string } }
+  context: { params: Promise<{ fileId: string }> }
 ) {
   try {
+    const params = await context.params;
     console.log('🗑️ Delete file API called - File ID:', params.fileId);
     
     let userId = 'dev-user';
