@@ -1,131 +1,93 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar, AreaChart, Area } from 'recharts';
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { Button } from '@/components/ui/Button';
+import { Card } from '@/components/ui/Card';
+import { LineChart } from '@/components/charts/LineChart';
+import { AreaChart } from '@/components/charts/AreaChart';
+import { BarChart } from '@/components/charts/BarChart';
+import { 
+  analyticsService, 
+  type TrendAnalysis
+} from '@/lib/services/analyticsService';
 
-interface TrendData {
-  date: string;
-  evaluations: number;
-  accuracy: number;
-  avgScore: number;
-  userCount: number;
-}
-
-interface MetricTrend {
+interface ExperimentAnalytic {
+  id: string;
   name: string;
-  value: number;
-  change: number;
-  changeType: 'increase' | 'decrease' | 'neutral';
+  avgAccuracy: number;
+  totalRuns: number;
+  successRate: number;
+  lastRun: Date;
+  trend: 'improving' | 'declining' | 'stable';
+  performance: Array<{ value: number }>;
 }
 
-const TrendsPage: React.FC = () => {
-  const [trendData, setTrendData] = useState<TrendData[]>([]);
-  const [metricTrends, setMetricTrends] = useState<MetricTrend[]>([]);
-  const [timeRange, setTimeRange] = useState<'7d' | '30d' | '90d'>('30d');
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [selectedMetric, setSelectedMetric] = useState<'evaluations' | 'accuracy' | 'avgScore' | 'userCount'>('evaluations');
+export default function TrendsPage() {
+  const [trends, setTrends] = useState<TrendAnalysis | null>(null);
+  const [experimentAnalytics, setExperimentAnalytics] = useState<ExperimentAnalytic[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [timePeriod, setTimePeriod] = useState<'7d' | '30d' | '90d'>('30d');
+  const [selectedMetric, setSelectedMetric] = useState<'accuracy' | 'successRate' | 'responseTime' | 'evaluationsCount'>('accuracy');
 
-  // Mock data generation - replace with actual API calls
   useEffect(() => {
-    const generateMockData = (): void => {
-      setIsLoading(true);
-      
-      // Generate mock trend data
-      const days = timeRange === '7d' ? 7 : timeRange === '30d' ? 30 : 90;
-      const mockTrendData: TrendData[] = [];
-      
-      for (let i = days - 1; i >= 0; i--) {
-        const date = new Date();
-        date.setDate(date.getDate() - i);
+    const loadTrends = async () => {
+      try {
+        await new Promise(resolve => setTimeout(resolve, 300));
         
-        mockTrendData.push({
-          date: date.toISOString().split('T')[0],
-          evaluations: Math.floor(Math.random() * 100) + 50,
-          accuracy: Math.random() * 100,
-          avgScore: Math.random() * 100,
-          userCount: Math.floor(Math.random() * 20) + 10,
-        });
+        const trendsData = analyticsService.getPerformanceTrends(timePeriod);
+        const experimentData = analyticsService.getExperimentAnalytics();
+        
+        setTrends(trendsData);
+        setExperimentAnalytics(experimentData);
+        
+        console.log('📈 Trends data loaded successfully');
+      } catch (error) {
+        console.error('Error loading trends:', error);
+      } finally {
+        setIsLoading(false);
       }
-      
-      setTrendData(mockTrendData);
-      
-      // Generate mock metric trends
-      const mockMetricTrends: MetricTrend[] = [
-        {
-          name: 'Total Evaluations',
-          value: 1247,
-          change: 12.5,
-          changeType: 'increase'
-        },
-        {
-          name: 'Average Accuracy',
-          value: 87.3,
-          change: -2.1,
-          changeType: 'decrease'
-        },
-        {
-          name: 'User Engagement',
-          value: 94.7,
-          change: 5.8,
-          changeType: 'increase'
-        },
-        {
-          name: 'Model Performance',
-          value: 91.2,
-          change: 0.3,
-          changeType: 'neutral'
-        }
-      ];
-      
-      setMetricTrends(mockMetricTrends);
-      setIsLoading(false);
     };
 
-    generateMockData();
-  }, [timeRange]);
+    loadTrends();
+  }, [timePeriod]);
 
-  const formatDate = (dateString: string): string => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  const getMetricTitle = (metric: string) => {
+    const titles = {
+      accuracy: 'Accuracy Trends',
+      successRate: 'Success Rate Trends',
+      responseTime: 'Response Time Trends',
+      evaluationsCount: 'Evaluation Volume Trends'
+    };
+    return titles[metric as keyof typeof titles];
   };
 
-  const getChangeIcon = (changeType: MetricTrend['changeType']): string => {
-    switch (changeType) {
-      case 'increase':
-        return '↗️';
-      case 'decrease':
-        return '↘️';
-      case 'neutral':
-        return '➡️';
-      default:
-        return '➡️';
-    }
+  const getMetricColor = (metric: string) => {
+    const colors = {
+      accuracy: '#3b82f6',
+      successRate: '#10b981',
+      responseTime: '#f59e0b',
+      evaluationsCount: '#8b5cf6'
+    };
+    return colors[metric as keyof typeof colors];
   };
 
-  const getChangeColor = (changeType: MetricTrend['changeType']): string => {
-    switch (changeType) {
-      case 'increase':
-        return 'text-green-600';
-      case 'decrease':
-        return 'text-red-600';
-      case 'neutral':
-        return 'text-gray-600';
-      default:
-        return 'text-gray-600';
-    }
+  const getMetricUnit = (metric: string) => {
+    const units = {
+      accuracy: '%',
+      successRate: '%',
+      responseTime: 's',
+      evaluationsCount: ''
+    };
+    return units[metric as keyof typeof units];
   };
 
   if (isLoading) {
     return (
-      <div className="p-6">
-        <div className="animate-pulse">
-          <div className="h-8 bg-gray-600/50 rounded w-1/4 mb-6"></div>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            {[...Array(4)].map((_, i) => (
-              <div key={i} className="h-32 bg-gray-700/50 border border-gray-600/50 rounded"></div>
-            ))}
-          </div>
-          <div className="h-96 bg-gray-700/50 border border-gray-600/50 rounded"></div>
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading trends...</p>
         </div>
       </div>
     );
@@ -134,203 +96,188 @@ const TrendsPage: React.FC = () => {
   return (
     <div className="p-6 space-y-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="flex justify-between items-start">
         <div>
-          <h1 className="text-3xl font-bold text-white">Analytics Trends</h1>
-          <p className="text-gray-300 mt-2">Track performance metrics and trends over time</p>
+          <h1 className="text-3xl font-bold text-white">Performance Trends</h1>
+          <p className="text-gray-300 mt-2">
+            Detailed analysis of your AI model evaluation performance over time
+          </p>
         </div>
         
-        {/* Time Range Selector */}
-        <div className="flex bg-gray-800 rounded-lg p-1">
-          {(['7d', '30d', '90d'] as const).map((range) => (
-            <button
-              key={range}
-              onClick={() => setTimeRange(range)}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                timeRange === range
-                  ? 'bg-blue-600 text-white shadow-sm'
-                  : 'text-gray-400 hover:text-white'
-              }`}
-            >
-              {range === '7d' ? '7 Days' : range === '30d' ? '30 Days' : '90 Days'}
-            </button>
-          ))}
+        <div className="flex gap-3">
+          <Link href="/analytics">
+            <Button variant="outline">← Back to Analytics</Button>
+          </Link>
         </div>
       </div>
 
-      {/* Metric Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {metricTrends.map((metric) => (
-          <div key={metric.name} className="bg-gray-800/50 border border-gray-700 rounded-lg p-6 hover:bg-gray-700/50 transition-all duration-300">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-300">{metric.name}</p>
-                <p className="text-2xl font-bold text-white mt-2">{metric.value.toLocaleString()}</p>
-              </div>
-              <div className="text-2xl">{getChangeIcon(metric.changeType)}</div>
-            </div>
-            <div className="mt-4 flex items-center">
-              <span className={`text-sm font-medium ${getChangeColor(metric.changeType)}`}>
-                {metric.change > 0 ? '+' : ''}{metric.change.toFixed(1)}%
-              </span>
-              <span className="text-gray-400 text-sm ml-2">vs last period</span>
-            </div>
+      {/* Time Period & Metric Selector */}
+      <div className="flex flex-wrap gap-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-2">Time Period</label>
+          <div className="flex bg-gray-800 rounded-lg p-1">
+            {(['7d', '30d', '90d'] as const).map((period) => (
+              <button
+                key={period}
+                onClick={() => setTimePeriod(period)}
+                className={`px-3 py-1 text-sm rounded-md transition-colors ${
+                  timePeriod === period
+                    ? 'bg-blue-600 text-white'
+                    : 'text-gray-400 hover:text-white'
+                }`}
+              >
+                {period === '7d' ? '7 Days' : period === '30d' ? '30 Days' : '90 Days'}
+              </button>
+            ))}
           </div>
-        ))}
-      </div>
+        </div>
 
-      {/* Metric Selector */}
-      <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-          <h2 className="text-xl font-semibold text-white">Trend Analysis</h2>
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-2">Primary Metric</label>
           <select
             value={selectedMetric}
             onChange={(e) => setSelectedMetric(e.target.value as typeof selectedMetric)}
-            className="bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="bg-gray-800 border border-gray-600 text-white rounded-lg px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <option value="evaluations">Evaluations</option>
-            <option value="accuracy">Accuracy (%)</option>
-            <option value="avgScore">Average Score</option>
-            <option value="userCount">User Count</option>
+            <option value="accuracy">Accuracy</option>
+            <option value="successRate">Success Rate</option>
+            <option value="responseTime">Response Time</option>
+            <option value="evaluationsCount">Evaluation Volume</option>
           </select>
         </div>
-
-        {/* Line Chart */}
-        <div className="h-96 w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={trendData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-              <XAxis 
-                dataKey="date" 
-                tickFormatter={formatDate}
-                stroke="#9ca3af"
-                fontSize={12}
-              />
-              <YAxis stroke="#9ca3af" fontSize={12} />
-              <Tooltip 
-                labelFormatter={(value) => `Date: ${formatDate(value as string)}`}
-                formatter={(value: number) => [value.toFixed(1), selectedMetric]}
-                contentStyle={{
-                  backgroundColor: '#374151',
-                  border: '1px solid #4b5563',
-                  borderRadius: '6px',
-                  color: '#ffffff'
-                }}
-              />
-              <Legend />
-              <Line
-                type="monotone"
-                dataKey={selectedMetric}
-                stroke="#3b82f6"
-                strokeWidth={2}
-                dot={{ fill: '#3b82f6', strokeWidth: 2, r: 4 }}
-                activeDot={{ r: 6, stroke: '#3b82f6', strokeWidth: 2 }}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
       </div>
 
-      {/* Additional Charts Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Bar Chart */}
-        <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-white mb-4">Weekly Comparison</h3>
-          <div className="h-64 w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={trendData.slice(-7)}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                <XAxis 
-                  dataKey="date" 
-                  tickFormatter={formatDate}
-                  stroke="#9ca3af"
-                  fontSize={12}
-                />
-                <YAxis stroke="#9ca3af" fontSize={12} />
-                <Tooltip 
-                  labelFormatter={(value) => `Date: ${formatDate(value as string)}`}
-                  contentStyle={{
-                    backgroundColor: '#374151',
-                    border: '1px solid #4b5563',
-                    borderRadius: '6px',
-                    color: '#ffffff'
-                  }}
-                />
-                <Bar dataKey="evaluations" fill="#3b82f6" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
+      {/* Main Trend Chart */}
+      {trends && (
+        <Card className="p-6 bg-gray-800/50 border-gray-700">
+          <LineChart
+            data={trends.metrics[selectedMetric].map(item => ({ 
+              date: new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }), 
+              value: item.value 
+            }))}
+            xKey="date"
+            yKey="value"
+            title={getMetricTitle(selectedMetric)}
+            color={getMetricColor(selectedMetric)}
+            height={400}
+            yAxisLabel={`${getMetricTitle(selectedMetric).split(' ')[0]} (${getMetricUnit(selectedMetric)})`}
+            showGrid={true}
+          />
+        </Card>
+      )}
 
-        {/* Area Chart */}
-        <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-white mb-4">Performance Trend</h3>
-          <div className="h-64 w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={trendData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                <XAxis 
-                  dataKey="date" 
-                  tickFormatter={formatDate}
-                  stroke="#9ca3af"
-                  fontSize={12}
-                />
-                <YAxis stroke="#9ca3af" fontSize={12} />
-                <Tooltip 
-                  labelFormatter={(value) => `Date: ${formatDate(value as string)}`}
-                  contentStyle={{
-                    backgroundColor: '#374151',
-                    border: '1px solid #4b5563',
-                    borderRadius: '6px',
-                    color: '#ffffff'
-                  }}
-                />
-                <Area
-                  type="monotone"
-                  dataKey="accuracy"
-                  stroke="#10b981"
-                  fill="#10b981"
-                  fillOpacity={0.2}
-                  strokeWidth={2}
-                />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
+      {/* All Metrics Overview */}
+      {trends && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <Card className="p-6 bg-gray-800/50 border-gray-700">
+            <AreaChart
+              data={trends.metrics.accuracy.map(item => ({ 
+                date: new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }), 
+                accuracy: item.value 
+              }))}
+              xKey="date"
+              yKey="accuracy"
+              title="Accuracy Over Time"
+              color="#3b82f6"
+              height={300}
+              yAxisLabel="Accuracy (%)"
+            />
+          </Card>
+          
+          <Card className="p-6 bg-gray-800/50 border-gray-700">
+            <LineChart
+              data={trends.metrics.responseTime.map(item => ({ 
+                date: new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }), 
+                time: item.value 
+              }))}
+              xKey="date"
+              yKey="time"
+              title="Response Time Trends"
+              color="#f59e0b"
+              height={300}
+              yAxisLabel="Response Time (s)"
+            />
+          </Card>
         </div>
-      </div>
+      )}
 
-      {/* Insights Section */}
-      <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
-        <h3 className="text-lg font-semibold text-white mb-4">Key Insights</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-blue-900/20 border border-blue-500/30 rounded-lg p-4">
-            <h4 className="font-medium text-blue-300 mb-2">📈 Growth Trend</h4>
-            <p className="text-blue-200 text-sm">
-              Evaluations have increased by 12.5% compared to the previous period, showing strong user engagement.
-            </p>
-          </div>
-          <div className="bg-yellow-900/20 border border-yellow-500/30 rounded-lg p-4">
-            <h4 className="font-medium text-yellow-300 mb-2">⚠️ Attention Needed</h4>
-            <p className="text-yellow-200 text-sm">
-              Average accuracy has decreased by 2.1%. Consider reviewing model performance and training data.
-            </p>
-          </div>
-          <div className="bg-green-900/20 border border-green-500/30 rounded-lg p-4">
-            <h4 className="font-medium text-green-300 mb-2">✅ Positive Signal</h4>
-            <p className="text-green-200 text-sm">
-              User engagement is up 5.8%, indicating improved user experience and platform adoption.
-            </p>
-          </div>
-          <div className="bg-purple-900/20 border border-purple-500/30 rounded-lg p-4">
-            <h4 className="font-medium text-purple-300 mb-2">🎯 Recommendation</h4>
-            <p className="text-purple-200 text-sm">
-              Focus on maintaining evaluation volume growth while addressing accuracy concerns through model optimization.
-            </p>
+      {/* Experiment-Specific Trends */}
+      {experimentAnalytics.length > 0 && (
+        <div>
+          <h2 className="text-xl font-semibold text-white mb-4">Individual Experiment Trends</h2>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {experimentAnalytics.slice(0, 4).map((experiment) => (
+              <Card key={experiment.id} className="p-6 bg-gray-800/50 border-gray-700">
+                <div className="flex justify-between items-start mb-4">
+                  <div>
+                    <h3 className="text-lg font-semibold text-white">{experiment.name}</h3>
+                    <p className="text-sm text-gray-400">
+                      Avg: {experiment.avgAccuracy.toFixed(1)}% • Runs: {experiment.totalRuns}
+                    </p>
+                  </div>
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                    experiment.trend === 'improving' 
+                      ? 'bg-green-500/20 text-green-400'
+                      : experiment.trend === 'declining'
+                      ? 'bg-red-500/20 text-red-400'
+                      : 'bg-gray-500/20 text-gray-400'
+                  }`}>
+                    {experiment.trend}
+                  </span>
+                </div>
+                
+                <LineChart
+                  data={experiment.performance.map((item: { value: number }, index: number) => ({ 
+                    run: `Run ${index + 1}`, 
+                    performance: item.value 
+                  }))}
+                  xKey="run"
+                  yKey="performance"
+                  color="#10b981"
+                  height={200}
+                  showGrid={false}
+                />
+              </Card>
+            ))}
           </div>
         </div>
-      </div>
+      )}
+
+      {/* Statistical Summary */}
+      {trends && (
+        <Card className="p-6 bg-gray-800/50 border-gray-700">
+          <h3 className="text-lg font-semibold text-white mb-4">Statistical Summary</h3>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            {Object.entries(trends.metrics).map(([key, data]) => {
+              const values = data.map(d => d.value);
+              const avg = values.reduce((a, b) => a + b, 0) / values.length;
+              const max = Math.max(...values);
+              const min = Math.min(...values);
+              const latest = values[values.length - 1];
+              const change = values.length > 1 ? ((latest - values[0]) / values[0] * 100) : 0;
+              
+              return (
+                <div key={key} className="text-center">
+                  <h4 className="text-sm font-medium text-gray-400 mb-2 capitalize">
+                    {key.replace(/([A-Z])/g, ' $1').trim()}
+                  </h4>
+                  <div className="space-y-1">
+                    <p className="text-lg font-semibold text-white">
+                      {avg.toFixed(1)}{getMetricUnit(key)}
+                    </p>
+                    <p className="text-xs text-gray-400">
+                      Range: {min.toFixed(1)} - {max.toFixed(1)}
+                    </p>
+                    <p className={`text-xs ${change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                      {change >= 0 ? '+' : ''}{change.toFixed(1)}% trend
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </Card>
+      )}
     </div>
   );
-};
-
-export default TrendsPage;
+}

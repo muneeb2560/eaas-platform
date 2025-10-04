@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from 'next/dynamic';
 import React, { useState, useCallback, useEffect } from 'react';
 import { useDropzone, FileRejection } from 'react-dropzone';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
@@ -33,6 +34,7 @@ interface UploadedFile {
 export default function UploadPage() {
   const { user } = useAuth();
   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
   const [uploads, setUploads] = useState<UploadPreview[]>([]);
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [uploadProgress, setUploadProgress] = useState<Record<string, number>>({});
@@ -40,6 +42,11 @@ export default function UploadPage() {
   const { loading, error, execute } = useAsync<{ success: boolean; url: string; id: string }>();
   const { showSuccess, showError, showInfo } = useToast();
   const { addNotification } = useNotifications();
+
+  // Ensure component is mounted on client side
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Fetch uploaded files on component mount
   const fetchUploadedFiles = useCallback(async () => {
@@ -84,6 +91,12 @@ export default function UploadPage() {
   }, [fetchUploadedFiles]);
 
   const onDrop = useCallback((acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
+    // Only process files on the client side
+    if (typeof window === 'undefined') {
+      console.warn('File drop attempted on server side, skipping');
+      return;
+    }
+
     // Handle rejected files
     if (rejectedFiles.length > 0) {
       console.warn('Some files were rejected:', rejectedFiles);
@@ -113,7 +126,7 @@ export default function UploadPage() {
 
       return {
         file,
-        preview: typeof window !== 'undefined' ? URL.createObjectURL(file) : '',
+        preview: URL.createObjectURL(file),
         validationErrors,
       };
     });
@@ -133,9 +146,11 @@ export default function UploadPage() {
   });
 
   const removeFile = (index: number) => {
+    if (typeof window === 'undefined') return;
+    
     setUploads(prev => {
       const newUploads = [...prev];
-      if (typeof window !== 'undefined' && newUploads[index].preview) {
+      if (newUploads[index]?.preview) {
         URL.revokeObjectURL(newUploads[index].preview);
       }
       newUploads.splice(index, 1);
@@ -273,6 +288,18 @@ export default function UploadPage() {
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
+
+  if (!mounted) {
+    return (
+      <DashboardLayout title="Upload Dataset">
+        <div className="p-6 max-w-4xl mx-auto">
+          <div className="flex items-center justify-center min-h-[400px]">
+            <LoadingSpinner size="lg" />
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   if (!user) {
     router.push('/auth/signin');
