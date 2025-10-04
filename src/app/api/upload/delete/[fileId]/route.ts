@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
+import { createServerClient } from '@/lib/supabase/server';
 import { unlink } from 'fs/promises';
 import { join } from 'path';
 import { existsSync } from 'fs';
@@ -24,7 +23,7 @@ export async function DELETE(
     
     if (!isDevelopmentMode) {
       // Production mode - use Supabase authentication
-      const supabase = createRouteHandlerClient({ cookies });
+      const supabase = await createServerClient();
       
       // Check authentication
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
@@ -88,7 +87,7 @@ export async function DELETE(
       });
     } else {
       // Production mode - delete from Supabase Storage
-      const supabase = createRouteHandlerClient({ cookies });
+      const supabase = await createServerClient();
       
       const { error } = await supabase.storage
         .from('datasets')

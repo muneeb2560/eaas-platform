@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
+import { createServerClient } from '@/lib/supabase/server';
 
 // Check if we're in development mode with placeholder credentials
 const isDevelopmentMode = 
@@ -31,7 +30,7 @@ export async function PATCH(request: NextRequest) {
     }
 
     // Production mode - use Supabase
-    const supabase = createRouteHandlerClient({ cookies });
+    const supabase = await createServerClient();
     
     // Check authentication
     const { data: { session }, error: sessionError } = await supabase.auth.getSession();

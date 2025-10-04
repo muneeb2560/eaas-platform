@@ -113,7 +113,7 @@ export default function UploadPage() {
 
       return {
         file,
-        preview: URL.createObjectURL(file),
+        preview: typeof window !== 'undefined' ? URL.createObjectURL(file) : '',
         validationErrors,
       };
     });
@@ -135,7 +135,9 @@ export default function UploadPage() {
   const removeFile = (index: number) => {
     setUploads(prev => {
       const newUploads = [...prev];
-      URL.revokeObjectURL(newUploads[index].preview);
+      if (typeof window !== 'undefined' && newUploads[index].preview) {
+        URL.revokeObjectURL(newUploads[index].preview);
+      }
       newUploads.splice(index, 1);
       return newUploads;
     });

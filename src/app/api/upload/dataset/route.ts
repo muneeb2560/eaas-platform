@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
+import { createServerClient } from '@/lib/supabase/server';
 import { z } from 'zod';
 import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
@@ -25,7 +24,7 @@ export async function POST(request: NextRequest) {
     
     if (!isDevelopmentMode) {
       // Production mode - use Supabase authentication
-      const supabase = createRouteHandlerClient({ cookies });
+      const supabase = await createServerClient();
       
       // Check authentication
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
@@ -118,7 +117,7 @@ export async function POST(request: NextRequest) {
       });
     } else {
       // Production mode - use Supabase Storage
-      const supabase = createRouteHandlerClient({ cookies });
+      const supabase = await createServerClient();
       
       const { data, error } = await supabase.storage
         .from('datasets')

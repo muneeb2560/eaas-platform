@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
+import { createServerClient } from '../../../../lib/supabase/server';
 import { readdir, stat } from 'fs/promises';
 import { join } from 'path';
 import { existsSync } from 'fs';
@@ -12,7 +11,7 @@ const isDevelopmentMode =
   !process.env.NEXT_PUBLIC_SUPABASE_URL ||
   !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     console.log('📂 List uploads API called - Development mode:', isDevelopmentMode);
     
@@ -20,7 +19,7 @@ export async function GET(request: NextRequest) {
     
     if (!isDevelopmentMode) {
       // Production mode - use Supabase authentication
-      const supabase = createRouteHandlerClient({ cookies });
+      const supabase = await createServerClient();
       
       // Check authentication
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
@@ -88,7 +87,7 @@ export async function GET(request: NextRequest) {
       });
     } else {
       // Production mode - list files from Supabase Storage
-      const supabase = createRouteHandlerClient({ cookies });
+      const supabase = await createServerClient();
       
       const { data, error } = await supabase.storage
         .from('datasets')
@@ -105,7 +104,7 @@ export async function GET(request: NextRequest) {
         );
       }
 
-      const fileList = data.map(file => ({
+      const fileList = data.map((file: { name: string; created_at: string; metadata?: { size?: number } }) => ({
         id: `${userId}/${file.name}`,
         name: file.name.replace(/^\d+-/, ''), // Remove timestamp prefix
         originalName: file.name,
