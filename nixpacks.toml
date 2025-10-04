@@ -1,5 +1,14 @@
 providers = ["node"]
 
+[phases.install]
+cmd = "npm ci"
+
+[phases.build]
+cmd = "npm run build"
+
+[start]
+cmd = "npm start"
+
 [variables]
 NODE_ENV = "production"
 NODE_OPTIONS = "--no-deprecation=punycode"

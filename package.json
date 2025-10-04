@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "next dev --turbopack --port 3002",
     "build": "next build",
-    "start": "next start",
+    "start": "node start.js",
+    "start:standalone": "node .next/standalone/server.js",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
     "type-check": "tsc --noEmit",
@@ -48,7 +49,12 @@
     "react-hook-form": "^7.47.0",
     "recharts": "^2.8.0",
     "tailwind-merge": "^2.0.0",
-    "zod": "^3.22.4"
+    "zod": "^3.22.4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "tailwindcss": "^3.4.18",
+    "typescript": "^5"
   },
   "devDependencies": {
     "@testing-library/dom": "^10.4.0",
@@ -56,16 +62,11 @@
     "@testing-library/react": "^16.0.1",
     "@testing-library/user-event": "^14.5.1",
     "@types/jest": "^29.5.8",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
     "concurrently": "^8.2.2",
     "eslint": "^9",
     "eslint-config-next": "15.5.4",
     "jest": "^30.2.0",
-    "supabase": "^2.48.3",
-    "tailwindcss": "^3.4.18",
-    "typescript": "^5"
+    "supabase": "^2.48.3"
   },
   "overrides": {
     "glob": "^11.0.0",
