@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack --port 3002",
-    "build": "next build --turbopack",
+    "build": "next build",
     "start": "next start --port 3002",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
@@ -52,8 +52,9 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.1.4",
-    "@testing-library/react": "^14.1.2",
+    "@testing-library/react": "^15.0.7",
     "@testing-library/user-event": "^14.5.1",
     "@types/jest": "^29.5.8",
     "@types/node": "^20",
@@ -82,5 +83,9 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/your-org/eaas-platform.git"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
   }
 }
