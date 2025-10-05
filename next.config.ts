@@ -13,8 +13,12 @@ const nextConfig: NextConfig = {
   
   // Experimental optimizations for memory reduction
   experimental: {
-    // Optimize bundling
-    optimizePackageImports: ['react-icons', 'lodash', 'date-fns']
+    // Optimize bundling - disable for memory savings
+    optimizePackageImports: false,
+    // Reduce memory usage
+    turbotrace: {
+      memoryLimit: 256,
+    },
   },
   
   // Webpack optimizations for memory reduction
@@ -23,25 +27,31 @@ const nextConfig: NextConfig = {
     config.optimization = {
       ...config.optimization,
       // Reduce chunk sizes aggressively
-      splitChunks: {
-        chunks: 'all',
-        minSize: 10000,
-        maxSize: 100000,
-        cacheGroups: {
-          vendor: {
-            test: /[\\/]node_modules[\\/]/,
-            name: 'vendors',
-            chunks: 'all',
-            maxSize: 100000,
-          },
-          common: {
-            name: 'common',
-            minChunks: 2,
-            chunks: 'all',
-            maxSize: 50000,
+        splitChunks: {
+          chunks: 'all',
+          minSize: 2000,
+          maxSize: 25000,
+          cacheGroups: {
+            vendor: {
+              test: /[\\/]node_modules[\\/]/,
+              name: 'vendors',
+              chunks: 'all',
+              maxSize: 25000,
+            },
+            common: {
+              name: 'common',
+              minChunks: 2,
+              chunks: 'all',
+              maxSize: 15000,
+            },
+            react: {
+              test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
+              name: 'react',
+              chunks: 'all',
+              maxSize: 20000,
+            },
           },
         },
-      },
     };
     
     // Reduce memory usage during compilation
