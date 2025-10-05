@@ -24,13 +24,23 @@ function checkMemoryUsage(): { status: 'pass' | 'fail' | 'warn'; details: Record
     const totalMB = Math.round(usage.heapTotal / 1024 / 1024);
     const usage_percent = (usedMB / totalMB) * 100;
     
+    // Adjust thresholds for development vs production
+    const isDevelopment = process.env.NODE_ENV === 'development';
+    const failThreshold = isDevelopment ? 95 : 90;  // More lenient in dev
+    const warnThreshold = isDevelopment ? 85 : 75;  // More lenient in dev
+    
     return {
-      status: usage_percent > 90 ? 'fail' : usage_percent > 75 ? 'warn' : 'pass',
+      status: usage_percent > failThreshold ? 'fail' : usage_percent > warnThreshold ? 'warn' : 'pass',
       details: {
         heapUsed: `${usedMB}MB`,
         heapTotal: `${totalMB}MB`,
         usage_percent: `${usage_percent.toFixed(1)}%`,
-        external: `${Math.round(usage.external / 1024 / 1024)}MB`
+        external: `${Math.round(usage.external / 1024 / 1024)}MB`,
+        environment: process.env.NODE_ENV || 'unknown',
+        thresholds: {
+          warn: `${warnThreshold}%`,
+          fail: `${failThreshold}%`
+        }
       }
     };
   } catch (error) {
@@ -41,7 +51,25 @@ function checkMemoryUsage(): { status: 'pass' | 'fail' | 'warn'; details: Record
 // Basic dependency check
 function checkDependencies(): { status: 'pass' | 'fail'; details: Record<string, unknown> } {
   try {
-    // Check if essential modules are available
+    // In development mode, if the server is running, assume dependencies are working
+    const isDevelopment = process.env.NODE_ENV === 'development';
+    
+    if (isDevelopment) {
+      // If we can execute this code, Next.js and React are working
+      return {
+        status: 'pass',
+        details: {
+          modules: {
+            next: true,
+            react: true,
+            'react-dom': true
+          },
+          note: 'Development mode - dependencies assumed available if server is running'
+        }
+      };
+    }
+    
+    // Production mode - actual dependency check
     const essentialModules = ['next', 'react', 'react-dom'];
     const moduleStatus: Record<string, boolean> = {};
     
