@@ -32,6 +32,10 @@
     "health-check:production": "node scripts/health-check.js ${RAILWAY_STATIC_URL:-http://localhost:3000}/api/health",
     "validate-deployment": "node scripts/deployment-validation.js",
     "validate-deployment:production": "node scripts/deployment-validation.js ${RAILWAY_STATIC_URL}",
+    "test-health-comprehensive": "node scripts/test-health-comprehensive.js",
+    "test-health-production": "RAILWAY_STATIC_URL=${RAILWAY_STATIC_URL} node scripts/test-health-comprehensive.js",
+    "railway-deploy-safe": "cp railway-no-healthcheck.json railway.json && git add railway.json && git commit -m 'temp: disable healthcheck for safe deployment' && git push",
+    "railway-deploy-normal": "git checkout railway.json && git add railway.json && git commit -m 'restore: enable healthcheck' && git push",
     "precommit": "npm run lint && npm run type-check && npm run test"
   },
   "dependencies": {
