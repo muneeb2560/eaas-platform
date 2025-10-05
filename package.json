@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack --port 3002",
-    "build": "NODE_ENV=production NODE_OPTIONS='--max-old-space-size=128 --max-semi-space-size=8 --max-new-space-size=16' next build",
+    "build": "NODE_ENV=production NODE_OPTIONS='--max-old-space-size=128 --max-semi-space-size=8' next build",
     "start": "node start.js",
     "start:standalone": "node .next/standalone/server.js",
     "lint": "eslint",

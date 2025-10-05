@@ -16,7 +16,7 @@
     "production": {
       "variables": {
         "NODE_ENV": "production",
-        "NODE_OPTIONS": "--max-old-space-size=128 --max-semi-space-size=8 --max-new-space-size=16",
+        "NODE_OPTIONS": "--max-old-space-size=128 --max-semi-space-size=8",
         "NEXT_TELEMETRY_DISABLED": "1",
         "APP_VERSION": "1.0.0"
       }
