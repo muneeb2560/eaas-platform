@@ -12,7 +12,7 @@ const path = require('path');
 console.log('🚀 Starting Railway-optimized build...');
 
 // Set memory-optimized environment variables
-process.env.NODE_OPTIONS = '--max-old-space-size=1024 --max-semi-space-size=64';
+process.env.NODE_OPTIONS = '--max-old-space-size=512 --max-semi-space-size=32';
 process.env.NEXT_TELEMETRY_DISABLED = '1';
 process.env.NODE_ENV = 'production';
 
@@ -27,7 +27,7 @@ try {
   console.log('📦 Installing dependencies...');
   execSync('npm ci --omit=dev --no-audit --no-fund', { 
     stdio: 'inherit',
-    env: { ...process.env, NODE_OPTIONS: '--max-old-space-size=512' }
+    env: { ...process.env, NODE_OPTIONS: '--max-old-space-size=256' }
   });
 
   // Build with memory constraints
@@ -36,7 +36,7 @@ try {
     stdio: 'inherit',
     env: { 
       ...process.env, 
-      NODE_OPTIONS: '--max-old-space-size=1024 --max-semi-space-size=64'
+      NODE_OPTIONS: '--max-old-space-size=512 --max-semi-space-size=32'
     }
   });
 

@@ -22,17 +22,23 @@ const nextConfig: NextConfig = {
     // Memory optimizations
     config.optimization = {
       ...config.optimization,
-      // Reduce chunk sizes
+      // Reduce chunk sizes aggressively
       splitChunks: {
         chunks: 'all',
-        minSize: 20000,
-        maxSize: 244000,
+        minSize: 10000,
+        maxSize: 100000,
         cacheGroups: {
           vendor: {
             test: /[\\/]node_modules[\\/]/,
             name: 'vendors',
             chunks: 'all',
-            maxSize: 244000,
+            maxSize: 100000,
+          },
+          common: {
+            name: 'common',
+            minChunks: 2,
+            chunks: 'all',
+            maxSize: 50000,
           },
         },
       },
