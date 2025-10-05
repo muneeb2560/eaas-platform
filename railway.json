@@ -16,8 +16,9 @@
     "production": {
       "variables": {
         "NODE_ENV": "production",
-        "NODE_OPTIONS": "--max-old-space-size=1024 --max-semi-space-size=64",
-        "NEXT_TELEMETRY_DISABLED": "1",
+        "NEXT_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN1em5kbW5la21kZWtvZ2RraXdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk1NzcwOTksImV4cCI6MjA3NTE1MzA5OX0.z2SWJ8KOtVV9MLeWE9PGMwdIajAgz9No8tEMl8p7lFU",
+        "NEXT_PUBLIC_SUPABASE_URL": "https://cuzndmnemkmedkoogdkiws.supabase.co",
+        "SUPABASE_SERVICE_ROLE_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN1em5kbW5la21kZWtvZ2RraXdzIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1OTU3NzA5OSwiZXhwIjoyMDc1MTUzMDk5fQ.s15VYjTmZSjU51q9Wg264e5UQ40a50Rg_kcn9L1q11k",
         "APP_VERSION": "1.0.0"
       }
     }
