@@ -13,14 +13,8 @@ const nextConfig: NextConfig = {
   
   // Experimental optimizations for memory reduction
   experimental: {
-    // Reduce memory usage during builds
-    memoryBasedWorkers: true,
     // Optimize bundling
-    optimizePackageImports: ['react-icons', 'lodash', 'date-fns'],
-    // Enable advanced tree shaking
-    turbotrace: {
-      logLevel: 'error'
-    }
+    optimizePackageImports: ['react-icons', 'lodash', 'date-fns']
   },
   
   // Webpack optimizations for memory reduction

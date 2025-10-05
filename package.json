@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack --port 3002",
-    "build": "NODE_OPTIONS='--max-old-space-size=2048' next build",
+    "build": "NODE_OPTIONS='--max-old-space-size=1024' next build",
     "build:memory-optimized": "NODE_OPTIONS='--max-old-space-size=1024' next build",
     "start": "node start.js",
     "start:standalone": "node .next/standalone/server.js",
@@ -17,7 +17,9 @@
     "test:coverage": "jest --coverage",
     "analyze": "ANALYZE=true npm run build",
     "analyze:memory": "NODE_OPTIONS='--max-old-space-size=1024' ANALYZE=true npm run build",
-    "build:production": "NODE_ENV=production NODE_OPTIONS='--max-old-space-size=2048' npm run build",
+    "build:production": "NODE_ENV=production NODE_OPTIONS='--max-old-space-size=1024' npm run build",
+    "build:railway": "NODE_ENV=production NODE_OPTIONS='--max-old-space-size=1024 --max-semi-space-size=64' next build",
+    "build:railway-optimized": "node scripts/railway-build.js",
     "start:production": "NODE_ENV=production npm start",
     "docker:build": "docker build -t eaas-platform .",
     "docker:run": "docker run -p 3002:3002 --env-file .env.production eaas-platform",
@@ -63,6 +65,7 @@
     "recharts": "^2.8.0",
     "tailwind-merge": "^2.0.0",
     "zod": "^3.22.4",
+    "googleapis": "^161.0.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
@@ -79,8 +82,7 @@
     "eslint": "^9",
     "eslint-config-next": "15.5.4",
     "jest": "^30.2.0",
-    "supabase": "^2.48.3",
-    "googleapis": "^161.0.0"
+    "supabase": "^2.48.3"
   },
   "overrides": {
     "glob": "^11.0.0",

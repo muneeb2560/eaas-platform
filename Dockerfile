@@ -20,11 +20,11 @@ COPY . .
 
 # Set environment variables for build with memory constraints
 ENV NODE_ENV=production
-ENV NODE_OPTIONS="--max-old-space-size=1024 --no-deprecation=punycode"
+ENV NODE_OPTIONS="--max-old-space-size=1024 --max-semi-space-size=64 --no-deprecation=punycode"
 ENV NEXT_TELEMETRY_DISABLED=1
 
 # Build the application with memory optimization
-RUN npm run build
+RUN npm run build:railway
 
 # Production image, copy all the files and run next
 FROM base AS runner
