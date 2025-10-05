@@ -20,7 +20,7 @@ COPY . .
 
 # Set environment variables for build with memory constraints
 ENV NODE_ENV=production
-ENV NODE_OPTIONS="--max-old-space-size=512 --max-semi-space-size=32 --no-deprecation=punycode"
+ENV NODE_OPTIONS="--max-old-space-size=1024 --max-semi-space-size=64 --no-deprecation=punycode"
 ENV NEXT_TELEMETRY_DISABLED=1
 
 # Build the application with memory optimization

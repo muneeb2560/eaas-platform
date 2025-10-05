@@ -23,38 +23,41 @@ const nextConfig: NextConfig = {
     config.optimization = {
       ...config.optimization,
       // Reduce chunk sizes aggressively
-        splitChunks: {
-          chunks: 'all',
-          minSize: 2000,
-          maxSize: 25000,
-          cacheGroups: {
-            vendor: {
-              test: /[\\/]node_modules[\\/]/,
-              name: 'vendors',
-              chunks: 'all',
-              maxSize: 25000,
-            },
-            common: {
-              name: 'common',
-              minChunks: 2,
-              chunks: 'all',
-              maxSize: 15000,
-            },
-            react: {
-              test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
-              name: 'react',
-              chunks: 'all',
-              maxSize: 20000,
-            },
+      splitChunks: {
+        chunks: 'all',
+        minSize: 1000,
+        maxSize: 10000,
+        maxAsyncRequests: 5,
+        maxInitialRequests: 3,
+        cacheGroups: {
+          vendor: {
+            test: /[\\/]node_modules[\\/]/,
+            name: 'vendors',
+            chunks: 'all',
+            maxSize: 10000,
+            priority: 10,
+          },
+          common: {
+            name: 'common',
+            minChunks: 2,
+            chunks: 'all',
+            maxSize: 5000,
+            priority: 5,
+          },
+          react: {
+            test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
+            name: 'react',
+            chunks: 'all',
+            maxSize: 8000,
+            priority: 8,
           },
         },
+      },
+      // Reduce memory usage during compilation
+      usedExports: true,
+      sideEffects: false,
+      providedExports: false,
     };
-    
-    // Reduce memory usage during compilation
-    if (!dev && !isServer) {
-      config.optimization.usedExports = true;
-      config.optimization.sideEffects = false;
-    }
     
     // Plugin optimizations
     config.plugins.push(
