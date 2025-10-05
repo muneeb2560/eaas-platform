@@ -20,7 +20,7 @@ COPY . .
 
 # Set environment variables for build with memory constraints
 ENV NODE_ENV=production
-ENV NODE_OPTIONS="--max-old-space-size=1024 --optimize-for-size --no-deprecation=punycode"
+ENV NODE_OPTIONS="--max-old-space-size=1024 --no-deprecation=punycode"
 ENV NEXT_TELEMETRY_DISABLED=1
 
 # Build the application with memory optimization
@@ -31,7 +31,7 @@ FROM base AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
-ENV NODE_OPTIONS="--max-old-space-size=512 --optimize-for-size --no-deprecation=punycode"
+ENV NODE_OPTIONS="--max-old-space-size=512 --no-deprecation=punycode"
 ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN addgroup --system --gid 1001 nodejs
@@ -55,4 +55,4 @@ ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
 # Start with memory-optimized settings
-CMD ["node", "--max-old-space-size=512", "--optimize-for-size", "server.js"]
+CMD ["node", "--max-old-space-size=512", "server.js"]

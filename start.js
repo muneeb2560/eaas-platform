@@ -19,9 +19,7 @@ const HEALTH_CHECK_TIMEOUT = 10000;
 // Memory optimization settings
 const MEMORY_OPTS = [
   '--max-old-space-size=512',
-  '--optimize-for-size',
-  '--no-deprecation=punycode',
-  '--gc-interval=100'
+  '--no-deprecation=punycode'
 ];
 
 console.log('🚀 Starting memory-optimized production server...');
