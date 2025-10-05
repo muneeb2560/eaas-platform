@@ -2,9 +2,8 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 
 /**
- * Production start script that tries Next.js CLI first, 
- * then falls back to standalone server if available
- * Includes health check validation and graceful shutdown
+ * Memory-optimized production start script
+ * Configures Node.js for minimal memory usage
  */
 
 const { spawn } = require('child_process');
@@ -14,11 +13,20 @@ const http = require('http');
 
 const PORT = process.env.PORT || 3000;
 const HOSTNAME = process.env.HOSTNAME || '0.0.0.0';
-const HEALTH_CHECK_DELAY = 5000; // Wait 5 seconds before health check
-const HEALTH_CHECK_TIMEOUT = 10000; // 10 second timeout
+const HEALTH_CHECK_DELAY = 5000;
+const HEALTH_CHECK_TIMEOUT = 10000;
 
-console.log('🚀 Starting production server...');
+// Memory optimization settings
+const MEMORY_OPTS = [
+  '--max-old-space-size=512',
+  '--optimize-for-size',
+  '--no-deprecation=punycode',
+  '--gc-interval=100'
+];
+
+console.log('🚀 Starting memory-optimized production server...');
 console.log(`📍 Port: ${PORT}, Host: ${HOSTNAME}`);
+console.log(`🧿 Memory Options: ${MEMORY_OPTS.join(' ')}`);
 console.log(`🌍 Environment: ${process.env.NODE_ENV || 'unknown'}`);
 
 let serverProcess = null;
@@ -116,9 +124,11 @@ function setupGracefulShutdown() {
 
 // Try to start with Next.js CLI first
 function startWithNextCLI() {
-  console.log('🔧 Attempting to start with Next.js CLI...');
+  console.log('🔧 Attempting to start with memory-optimized Next.js CLI...');
   
-  serverProcess = spawn('npx', ['next', 'start', '-p', PORT, '-H', HOSTNAME], {
+  const nextArgs = ['next', 'start', '-p', PORT, '-H', HOSTNAME];
+  
+  serverProcess = spawn('node', [...MEMORY_OPTS, ...['--', 'npx', ...nextArgs]], {
     stdio: 'inherit',
     env: { ...process.env, PORT, HOSTNAME }
   });
@@ -154,12 +164,35 @@ function startStandalone() {
   const standalonePath = path.join(__dirname, '.next', 'standalone', 'server.js');
   
   if (existsSync(standalonePath)) {
-    console.log('✅ Starting standalone server...');
+    console.log('✅ Starting memory-optimized standalone server...');
     process.env.PORT = PORT;
     process.env.HOSTNAME = HOSTNAME;
     
+    // Apply memory optimizations to current process
+    if (process.argv.indexOf('--max-old-space-size') === -1) {
+      console.log('⚠️ Memory optimizations not applied to current process');
+    }
+    
     try {
-      require(standalonePath);
+      // Start standalone server with optimized settings
+      const standaloneProcess = spawn('node', [...MEMORY_OPTS, standalonePath], {
+        stdio: 'inherit',
+        env: { ...process.env, PORT, HOSTNAME }
+      });
+      
+      standaloneProcess.on('error', (error) => {
+        console.error('❌ Standalone server failed:', error.message);
+        process.exit(1);
+      });
+      
+      standaloneProcess.on('exit', (code) => {
+        if (code !== 0) {
+          console.error(`❌ Standalone server exited with code ${code}`);
+          process.exit(1);
+        }
+      });
+      
+      serverProcess = standaloneProcess;
       
       // Validate health after startup
       validateServerHealth().catch(error => {

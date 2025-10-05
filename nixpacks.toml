@@ -1,15 +1,19 @@
 providers = ["node"]
 
 [phases.install]
-cmd = "npm ci"
+cmd = "npm ci --omit=dev --no-audit --no-fund"
 
 [phases.build]
-cmd = "npm run build && echo '✅ Build completed successfully'"
+cmd = "NODE_OPTIONS='--max-old-space-size=1024' npm run build && echo '✅ Build completed successfully'"
 
 [start]
-cmd = "npm start"
+cmd = "NODE_OPTIONS='--max-old-space-size=512' npm start"
 
 [variables]
 NODE_ENV = "production"
-NODE_OPTIONS = "--no-deprecation=punycode"
+NODE_OPTIONS = "--no-deprecation=punycode --max-old-space-size=512"
 APP_VERSION = "1.0.0"
+NPM_CONFIG_LOGLEVEL = "error"
+NPM_CONFIG_AUDIT = "false"
+NPM_CONFIG_FUND = "false"
+NEXT_TELEMETRY_DISABLED = "1"

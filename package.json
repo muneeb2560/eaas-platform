@@ -5,7 +5,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack --port 3002",
-    "build": "next build",
+    "build": "NODE_OPTIONS='--max-old-space-size=2048' next build",
+    "build:memory-optimized": "NODE_OPTIONS='--max-old-space-size=1024' next build",
     "start": "node start.js",
     "start:standalone": "node .next/standalone/server.js",
     "lint": "eslint",
@@ -15,7 +16,8 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "analyze": "ANALYZE=true npm run build",
-    "build:production": "NODE_ENV=production npm run build",
+    "analyze:memory": "NODE_OPTIONS='--max-old-space-size=1024' ANALYZE=true npm run build",
+    "build:production": "NODE_ENV=production NODE_OPTIONS='--max-old-space-size=2048' npm run build",
     "start:production": "NODE_ENV=production npm start",
     "docker:build": "docker build -t eaas-platform .",
     "docker:run": "docker run -p 3002:3002 --env-file .env.production eaas-platform",
@@ -25,7 +27,7 @@
     "supabase:deploy": "supabase db push",
     "api:dev": "cd api && python3 main.py",
     "setup": "npm install && cd api && pip install -r requirements.txt",
-    "setup:production": "npm ci --production",
+    "setup:production": "npm ci --omit=dev --no-audit --no-fund",
     "dev:all": "concurrently \"npm run supabase:start\" \"redis-server\" \"npm run api:dev\" \"npm run dev\"",
     "health-check": "node scripts/health-check.js",
     "health-check:local": "node scripts/health-check.js http://localhost:3002/api/health",
@@ -36,6 +38,10 @@
     "test-health-production": "RAILWAY_STATIC_URL=${RAILWAY_STATIC_URL} node scripts/test-health-comprehensive.js",
     "railway-deploy-safe": "cp railway-no-healthcheck.json railway.json && git add railway.json && git commit -m 'temp: disable healthcheck for safe deployment' && git push",
     "railway-deploy-normal": "git checkout railway.json && git add railway.json && git commit -m 'restore: enable healthcheck' && git push",
+    "analyze-memory": "node scripts/analyze-memory.js",
+    "optimize-memory": "npm run clean && npm run analyze-memory && npm run build:memory-optimized",
+    "clean": "rm -rf .next node_modules/.cache",
+    "clean:full": "rm -rf .next node_modules package-lock.json && npm install",
     "precommit": "npm run lint && npm run type-check && npm run test"
   },
   "dependencies": {
@@ -47,7 +53,6 @@
     "autoprefixer": "^10.4.21",
     "clsx": "^2.0.0",
     "date-fns": "^2.30.0",
-    "googleapis": "^161.0.0",
     "jsonwebtoken": "^9.0.2",
     "next": "15.5.4",
     "nodemailer": "^7.0.6",
@@ -74,7 +79,8 @@
     "eslint": "^9",
     "eslint-config-next": "15.5.4",
     "jest": "^30.2.0",
-    "supabase": "^2.48.3"
+    "supabase": "^2.48.3",
+    "googleapis": "^161.0.0"
   },
   "overrides": {
     "glob": "^11.0.0",
