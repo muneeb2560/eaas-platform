@@ -8,6 +8,16 @@
     "startCommand": "npm start",
     "restartPolicyType": "always",
     "healthcheckPath": "/api/health",
-    "healthcheckTimeout": 100
+    "healthcheckTimeout": 60,
+    "sleepApplication": false,
+    "replicas": 1
+  },
+  "environments": {
+    "production": {
+      "variables": {
+        "NODE_ENV": "production",
+        "APP_VERSION": "1.0.0"
+      }
+    }
   }
 }

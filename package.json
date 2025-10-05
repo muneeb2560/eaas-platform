@@ -27,7 +27,11 @@
     "setup": "npm install && cd api && pip install -r requirements.txt",
     "setup:production": "npm ci --production",
     "dev:all": "concurrently \"npm run supabase:start\" \"redis-server\" \"npm run api:dev\" \"npm run dev\"",
-    "health-check": "curl -f http://localhost:3002/api/health || exit 1",
+    "health-check": "node scripts/health-check.js",
+    "health-check:local": "node scripts/health-check.js http://localhost:3002/api/health",
+    "health-check:production": "node scripts/health-check.js ${RAILWAY_STATIC_URL:-http://localhost:3000}/api/health",
+    "validate-deployment": "node scripts/deployment-validation.js",
+    "validate-deployment:production": "node scripts/deployment-validation.js ${RAILWAY_STATIC_URL}",
     "precommit": "npm run lint && npm run type-check && npm run test"
   },
   "dependencies": {
