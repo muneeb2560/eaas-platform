@@ -24,7 +24,7 @@ ENV NODE_OPTIONS="--max-old-space-size=128 --max-semi-space-size=8 --max-new-spa
 ENV NEXT_TELEMETRY_DISABLED=1
 
 # Build the application with memory optimization
-RUN npm run build:ultra-light
+RUN npm run build
 
 # Production image, copy all the files and run next
 FROM base AS runner
