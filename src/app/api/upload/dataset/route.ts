@@ -61,9 +61,9 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate file type and size
-    const allowedTypes = ['text/csv', 'application/json', 'text/plain'];
+    const allowedTypes = ['text/csv', 'application/json'];
     const allowedExtensions = ['.csv', '.json', '.jsonl'];
-    const maxSize = 50 * 1024 * 1024; // 50MB
+    const maxSize = 10 * 1024 * 1024; // 10MB
 
     const fileExtension = '.' + file.name.split('.').pop()?.toLowerCase();
     const isValidType = allowedTypes.includes(file.type) || allowedExtensions.includes(fileExtension);
@@ -79,7 +79,7 @@ export async function POST(request: NextRequest) {
 
     if (file.size > maxSize) {
       return NextResponse.json(
-        { success: false, error: 'File size exceeds 50MB limit' },
+        { success: false, error: 'File size must be less than 10MB' },
         { status: 400 }
       );
     }
@@ -112,6 +112,7 @@ export async function POST(request: NextRequest) {
         success: true,
         url: `/uploads/${userId}/${timestamp}-${file.name}`,
         id: fileName,
+        filename: file.name,
         message: 'File uploaded successfully (development mode)',
         developmentMode: true,
       });

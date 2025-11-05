@@ -60,18 +60,13 @@ describe('useSignOut Hook', () => {
   it('should prevent duplicate sign out attempts', async () => {
     const { result } = renderHook(() => useSignOut())
     
-    // Start first sign out
-    const firstSignOut = result.current.handleSignOut()
-    
-    // Try second sign out while first is in progress
+    // Using Promise.all to simulate concurrent calls
     await act(async () => {
-      await result.current.handleSignOut()
-    })
-    
-    // Wait for first to complete
-    await act(async () => {
-      await firstSignOut
-    })
+      await Promise.all([
+        result.current.handleSignOut(),
+        result.current.handleSignOut(),
+      ]);
+    });
     
     // Should only call signOut once
     expect(mockSignOut).toHaveBeenCalledTimes(1)
