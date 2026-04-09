@@ -1,0 +1,29 @@
+
+> eaas-platform@1.0.0 type-check
+> tsc --noEmit
+
+src/app/actions/rubrics.ts(28,29): error TS2339: Property 'criteria' does not exist on type 'never'.
+src/app/actions/rubrics.ts(30,15): error TS2339: Property 'id' does not exist on type 'never'.
+src/app/actions/rubrics.ts(31,17): error TS2339: Property 'name' does not exist on type 'never'.
+src/app/actions/rubrics.ts(32,24): error TS2339: Property 'description' does not exist on type 'never'.
+src/app/actions/rubrics.ts(36,23): error TS2339: Property 'is_template' does not exist on type 'never'.
+src/app/actions/rubrics.ts(37,22): error TS2339: Property 'created_at' does not exist on type 'never'.
+src/app/actions/rubrics.ts(38,22): error TS2339: Property 'updated_at' does not exist on type 'never'.
+src/app/actions/rubrics.ts(52,6): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(values: never, options?: { count?: "exact" | "planned" | "estimated" | undefined; } | undefined): PostgrestFilterBuilder<{ PostgrestVersion: "12"; }, never, never, null, "rubrics", never, "POST">', gave the following error.
+    Argument of type '{ user_id: string; name: any; description: any; is_template: any; criteria: { items: any; category: any; usageCount: number; isActive: boolean; }; }' is not assignable to parameter of type 'never'.
+  Overload 2 of 2, '(values: never[], options?: { count?: "exact" | "planned" | "estimated" | undefined; defaultToNull?: boolean | undefined; } | undefined): PostgrestFilterBuilder<{ PostgrestVersion: "12"; }, never, never, null, "rubrics", never, "POST">', gave the following error.
+    Object literal may only specify known properties, and 'user_id' does not exist in type 'never[]'.
+src/app/actions/rubrics.ts(92,28): error TS2339: Property 'criteria' does not exist on type 'never'.
+src/app/actions/rubrics.ts(96,13): error TS2345: Argument of type '{ name: any; description: any; is_template: any; criteria: { items: any; category: any; usageCount: any; isActive: any; }; }' is not assignable to parameter of type 'never'.
+src/app/actions/rubrics.ts(97,33): error TS2339: Property 'name' does not exist on type 'never'.
+src/app/actions/rubrics.ts(98,47): error TS2339: Property 'description' does not exist on type 'never'.
+src/app/actions/rubrics.ts(99,46): error TS2339: Property 'is_template' does not exist on type 'never'.
+src/app/actions/rubrics.ts(126,33): error TS2339: Property 'criteria' does not exist on type 'never'.
+src/app/actions/rubrics.ts(128,52): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(values: never, options?: { count?: "exact" | "planned" | "estimated" | undefined; } | undefined): PostgrestFilterBuilder<{ PostgrestVersion: "12"; }, never, never, null, "rubrics", never, "POST">', gave the following error.
+    Argument of type '{ user_id: string; name: string; description: any; is_template: boolean; criteria: any; }' is not assignable to parameter of type 'never'.
+  Overload 2 of 2, '(values: never[], options?: { count?: "exact" | "planned" | "estimated" | undefined; defaultToNull?: boolean | undefined; } | undefined): PostgrestFilterBuilder<{ PostgrestVersion: "12"; }, never, never, null, "rubrics", never, "POST">', gave the following error.
+    Object literal may only specify known properties, and 'user_id' does not exist in type 'never[]'.
+src/app/actions/rubrics.ts(130,23): error TS2339: Property 'name' does not exist on type 'never'.
+src/app/actions/rubrics.ts(131,27): error TS2339: Property 'description' does not exist on type 'never'.

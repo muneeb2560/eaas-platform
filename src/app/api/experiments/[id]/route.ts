@@ -86,7 +86,7 @@ export async function DELETE(
 
     const deletedExperiment = experiments.splice(index, 1)[0];
     
-    console.log(`🗑️ Deleted experiment: ${deletedExperiment.name} (ID: ${id})`);
+
 
     return NextResponse.json({
       success: true,
@@ -126,7 +126,7 @@ export async function PUT(
       updated_at: new Date().toISOString()
     };
 
-    console.log(`📝 Updated experiment: ${experiments[index].name} (ID: ${id})`);
+
 
     return NextResponse.json({
       success: true,

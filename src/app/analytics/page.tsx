@@ -24,8 +24,6 @@ export default function AnalyticsPage() {
   const [categoryData, setCategoryData] = useState<Array<{ category: string; score: number; count: number; change: number }>>([]);
   const [usageData, setUsageData] = useState<Array<{ hour: number; usage: number; label?: string }>>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [loadingStage, setLoadingStage] = useState<'metrics' | 'charts' | 'tables' | 'complete'>('metrics');
   const [timePeriod, setTimePeriod] = useState<'7d' | '30d' | '90d'>('30d');
 
   useEffect(() => {
@@ -46,7 +44,7 @@ export default function AnalyticsPage() {
         setCategoryData(categoryPerformance);
         setUsageData(usagePatterns.hourly);
         
-        console.log('📊 Analytics data loaded successfully');
+
       } catch (error) {
         console.error('Error loading analytics:', error);
       } finally {
@@ -70,43 +68,6 @@ export default function AnalyticsPage() {
     URL.revokeObjectURL(url);
   };
 
-  const handleRefresh = async () => {
-    try {
-      setIsRefreshing(true);
-      setLoadingStage('metrics');
-      
-      // Stage 1: Load metrics (500ms)
-      await new Promise(resolve => setTimeout(resolve, 500));
-      const metricsData = analyticsService.getOverallMetrics();
-      setMetrics(metricsData);
-      
-      // Stage 2: Load charts (600ms)
-      setLoadingStage('charts');
-      await new Promise(resolve => setTimeout(resolve, 600));
-      const trendsData = analyticsService.getPerformanceTrends(timePeriod);
-      const categoryPerformance = analyticsService.getCategoryPerformance();
-      const usagePatterns = analyticsService.getUsagePatterns();
-      setTrends(trendsData);
-      setCategoryData(categoryPerformance);
-      setUsageData(usagePatterns.hourly);
-      
-      // Stage 3: Load tables (400ms)
-      setLoadingStage('tables');
-      await new Promise(resolve => setTimeout(resolve, 400));
-      const modelsData = analyticsService.getModelPerformance();
-      setModels(modelsData);
-      
-      // Stage 4: Complete
-      setLoadingStage('complete');
-      await new Promise(resolve => setTimeout(resolve, 200));
-      
-      console.log('🔄 Analytics refreshed successfully');
-    } catch (error) {
-      console.error('Error refreshing analytics:', error);
-    } finally {
-      setIsRefreshing(false);
-    }
-  };
 
   if (isLoading) {
     return (

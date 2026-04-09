@@ -82,7 +82,7 @@ const nextConfig: NextConfig = {
   // Remove turbopack config for production builds to avoid conflicts
   ...(process.env.NODE_ENV === 'development' && {
     turbopack: {
-      root: '/Users/moneebraza/Desktop/FullStack/my-nextjs-app',
+      root: process.cwd(),
     },
   }),
 };

@@ -1,0 +1,44 @@
+
+> eaas-platform@1.0.0 type-check
+> tsc --noEmit
+
+src/__tests__/components/Button.test.tsx(7,40): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+src/__tests__/components/Button.test.tsx(8,42): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+src/__tests__/components/Button.test.tsx(22,20): error TS2339: Property 'toBeDisabled' does not exist on type 'JestMatchers<HTMLElement>'.
+src/__tests__/components/Button.test.tsx(27,40): error TS2339: Property 'toHaveClass' does not exist on type 'JestMatchers<HTMLElement>'.
+src/__tests__/components/Button.test.tsx(30,40): error TS2339: Property 'toHaveClass' does not exist on type 'JestMatchers<HTMLElement>'.
+src/__tests__/components/Button.test.tsx(35,40): error TS2339: Property 'toHaveClass' does not exist on type 'JestMatchers<HTMLElement>'.
+src/__tests__/components/Button.test.tsx(38,40): error TS2339: Property 'toHaveClass' does not exist on type 'JestMatchers<HTMLElement>'.
+src/__tests__/components/Card.test.tsx(12,46): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+src/__tests__/components/Card.test.tsx(23,18): error TS2339: Property 'toHaveClass' does not exist on type 'JestMatchers<HTMLDivElement | null>'.
+src/__tests__/components/Card.test.tsx(34,18): error TS2339: Property 'toHaveClass' does not exist on type 'JestMatchers<HTMLDivElement | null>'.
+src/__tests__/components/Settings.test.tsx(30,40): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+src/__tests__/components/Settings.test.tsx(39,52): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+src/__tests__/components/Settings.test.tsx(40,55): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+src/__tests__/components/Settings.test.tsx(41,47): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+src/__tests__/components/Settings.test.tsx(42,47): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+src/__tests__/components/Settings.test.tsx(43,44): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+src/__tests__/components/Settings.test.tsx(53,45): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+src/__tests__/components/Settings.test.tsx(54,52): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+src/__tests__/components/Settings.test.tsx(64,55): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+src/__tests__/components/Settings.test.tsx(73,52): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+src/__tests__/components/Settings.test.tsx(78,58): error TS2339: Property 'toBeInTheDocument' does not exist on type 'Matchers<void, HTMLElement | null>'.
+src/__tests__/pages/Home.test.tsx(19,60): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+src/__tests__/pages/Home.test.tsx(28,75): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+src/__tests__/pages/Home.test.tsx(37,57): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+src/__tests__/pages/Home.test.tsx(40,55): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+src/__tests__/pages/Home.test.tsx(41,83): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+src/__tests__/pages/Home.test.tsx(49,62): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+src/__tests__/pages/Home.test.tsx(52,69): error TS2339: Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.
+src/__tests__/test-utils.tsx(51,48): error TS2339: Property 'toBeInTheDocument' does not exist on type 'Matchers<void, HTMLElement | null>'.
+src/lib/utils/memory-optimization.tsx(61,11): error TS2322: Type 'Promise<typeof import("/Users/moneebraza/Downloads/eaas-platform-main/src/components/charts/BarChart")>' is not assignable to type 'Promise<{ default: ComponentType<any>; }>'.
+  Property 'default' is missing in type 'typeof import("/Users/moneebraza/Downloads/eaas-platform-main/src/components/charts/BarChart")' but required in type '{ default: ComponentType<any>; }'.
+src/lib/utils/memory-optimization.tsx(65,11): error TS2322: Type 'Promise<typeof import("/Users/moneebraza/Downloads/eaas-platform-main/src/components/charts/LineChart")>' is not assignable to type 'Promise<{ default: ComponentType<any>; }>'.
+  Property 'default' is missing in type 'typeof import("/Users/moneebraza/Downloads/eaas-platform-main/src/components/charts/LineChart")' but required in type '{ default: ComponentType<any>; }'.
+src/lib/utils/memory-optimization.tsx(69,11): error TS2322: Type 'Promise<typeof import("/Users/moneebraza/Downloads/eaas-platform-main/src/components/charts/PieChart")>' is not assignable to type 'Promise<{ default: ComponentType<any>; }>'.
+  Property 'default' is missing in type 'typeof import("/Users/moneebraza/Downloads/eaas-platform-main/src/components/charts/PieChart")' but required in type '{ default: ComponentType<any>; }'.
+src/lib/utils/memory-optimization.tsx(73,11): error TS2322: Type 'Promise<typeof import("/Users/moneebraza/Downloads/eaas-platform-main/src/components/charts/AreaChart")>' is not assignable to type 'Promise<{ default: ComponentType<any>; }>'.
+  Property 'default' is missing in type 'typeof import("/Users/moneebraza/Downloads/eaas-platform-main/src/components/charts/AreaChart")' but required in type '{ default: ComponentType<any>; }'.
+src/lib/utils/memory-optimization.tsx(81,18): error TS2307: Cannot find module '@/components/ui/DataTable' or its corresponding type declarations.
+src/lib/utils/memory-optimization.tsx(85,18): error TS2307: Cannot find module '@/components/ui/RichTextEditor' or its corresponding type declarations.
+src/lib/utils/memory-optimization.tsx(89,18): error TS2307: Cannot find module '@/components/ui/FileUploader' or its corresponding type declarations.

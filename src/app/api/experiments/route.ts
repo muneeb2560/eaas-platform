@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
 
     experiments.push(newExperiment);
 
-    console.log(`✅ Created experiment: ${newExperiment.name} (ID: ${newExperiment.id})`);
+
 
     return NextResponse.json({
       success: true,

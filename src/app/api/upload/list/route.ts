@@ -13,7 +13,7 @@ const isDevelopmentMode =
 
 export async function GET(_request: NextRequest) {
   try {
-    console.log('📂 List uploads API called - Development mode:', isDevelopmentMode);
+
     
     let userId = 'dev-user';
     

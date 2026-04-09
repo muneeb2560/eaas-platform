@@ -41,7 +41,7 @@ export default function TrendsPage() {
         setTrends(trendsData);
         setExperimentAnalytics(experimentData);
         
-        console.log('📈 Trends data loaded successfully');
+
       } catch (error) {
         console.error('Error loading trends:', error);
       } finally {

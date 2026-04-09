@@ -7,8 +7,6 @@ import { Card } from "@/components/ui/Card";
 
 export default function HomePage() {
   const [isLoading, setIsLoading] = useState(true);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [loadingStage, setLoadingStage] = useState<'hero' | 'features' | 'actions' | 'complete'>('hero');
 
   useEffect(() => {
     const initLoad = async () => {
@@ -19,33 +17,7 @@ export default function HomePage() {
     initLoad();
   }, []);
 
-  const handleRefresh = async () => {
-    try {
-      setIsRefreshing(true);
-      setLoadingStage('hero');
-      
-      // Stage 1: Hero section (500ms)
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      // Stage 2: Features (400ms)
-      setLoadingStage('features');
-      await new Promise(resolve => setTimeout(resolve, 400));
-      
-      // Stage 3: Quick actions (300ms)
-      setLoadingStage('actions');
-      await new Promise(resolve => setTimeout(resolve, 300));
-      
-      // Stage 4: Complete
-      setLoadingStage('complete');
-      await new Promise(resolve => setTimeout(resolve, 200));
-      
-      console.log('🔄 Homepage refreshed successfully');
-    } catch (error) {
-      console.error('Error refreshing homepage:', error);
-    } finally {
-      setIsRefreshing(false);
-    }
-  };
+
 
   if (isLoading) {
     return (
@@ -83,22 +55,8 @@ export default function HomePage() {
       </div>
 
       {/* Features Grid */}
-      <div className={`grid md:grid-cols-3 gap-8 mb-16 transition-all duration-700 ${
-        isRefreshing && (loadingStage === 'hero' || loadingStage === 'features') 
-          ? 'opacity-50 scale-95' 
-          : 'opacity-100 scale-100'
-      }`}>
-        {isRefreshing && loadingStage === 'features' ? (
-          // Loading skeleton for features
-          Array.from({ length: 3 }).map((_, index) => (
-            <Card key={`feature-skeleton-${index}`} className="p-6 bg-gray-800/50 border-gray-700 animate-pulse">
-              <div className="w-12 h-12 bg-gray-600/50 rounded-lg mb-4"></div>
-              <div className="h-6 bg-gray-600/50 rounded mb-2"></div>
-              <div className="h-4 bg-gray-600/30 rounded mb-1"></div>
-              <div className="h-4 bg-gray-600/30 rounded w-3/4"></div>
-            </Card>
-          ))
-        ) : (
+      <div className="grid md:grid-cols-3 gap-8 mb-16">
+        {
           [
             {
               icon: (
@@ -133,16 +91,10 @@ export default function HomePage() {
           ].map((feature, index) => (
             <Card 
               key={index} 
-              className={`p-6 bg-gradient-to-br from-gray-800/60 to-gray-900/60 border-gray-600/50 backdrop-blur-sm hover:from-gray-700/60 hover:to-gray-800/60 transition-all duration-500 hover:scale-105 ${
-                isRefreshing && loadingStage !== 'complete'
-                  ? 'opacity-0 translate-y-4'
-                  : 'opacity-100 translate-y-0'
-              }`}
+              className="p-6 bg-gradient-to-br from-gray-800/60 to-gray-900/60 border-gray-600/50 backdrop-blur-sm hover:from-gray-700/60 hover:to-gray-800/60 transition-all duration-500 hover:scale-105"
               style={{
                 animationDelay: `${index * 200}ms`,
-                animation: !isRefreshing || loadingStage === 'complete'
-                  ? `fadeInUp 0.6s ease-out ${index * 200}ms both`
-                  : 'none'
+                animation: `fadeInUp 0.6s ease-out ${index * 200}ms both`
               }}
             >
               <div className={`w-12 h-12 ${feature.bgColor} rounded-lg flex items-center justify-center mb-4`}>
@@ -153,27 +105,12 @@ export default function HomePage() {
                 {feature.description}
               </p>
             </Card>
-          ))
-        )}
+          ))}
       </div>
 
       {/* Quick Actions */}
-      <div className={`text-center transition-all duration-700 ${
-        isRefreshing && (loadingStage === 'hero' || loadingStage === 'features' || loadingStage === 'actions') 
-          ? 'opacity-50 scale-95' 
-          : 'opacity-100 scale-100'
-      }`}>
-        {isRefreshing && loadingStage === 'actions' ? (
-          // Loading skeleton for quick actions
-          <div className="animate-pulse">
-            <div className="h-8 bg-gray-600/50 rounded mb-8 max-w-md mx-auto"></div>
-            <div className="flex flex-wrap gap-4 justify-center">
-              {Array.from({ length: 4 }).map((_, index) => (
-                <div key={`action-skeleton-${index}`} className="h-10 bg-gray-600/50 rounded w-32"></div>
-              ))}
-            </div>
-          </div>
-        ) : (
+      <div className="text-center">
+        {
           <>
             <h2 className="text-3xl font-bold text-white mb-8">Quick Actions</h2>
             <div className="flex flex-wrap gap-4 justify-center">
@@ -185,16 +122,9 @@ export default function HomePage() {
               ].map((action, index) => (
                 <div
                   key={action.href}
-                  className={`transition-all duration-500 ${
-                    isRefreshing && loadingStage !== 'complete'
-                      ? 'opacity-0 translate-y-4'
-                      : 'opacity-100 translate-y-0'
-                  }`}
                   style={{
                     animationDelay: `${index * 150}ms`,
-                    animation: !isRefreshing || loadingStage === 'complete'
-                      ? `fadeInUp 0.6s ease-out ${index * 150}ms both`
-                      : 'none'
+                    animation: `fadeInUp 0.6s ease-out ${index * 150}ms both`
                   }}
                 >
                   <Link href={action.href}>
@@ -205,8 +135,7 @@ export default function HomePage() {
                 </div>
               ))}
             </div>
-          </>
-        )}
+          </>}
       </div>
     </div>
   );

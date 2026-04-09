@@ -10,11 +10,11 @@ const isDevelopmentMode =
 
 export async function POST(request: NextRequest) {
   try {
-    console.log('📸 Avatar upload API called - Development mode:', isDevelopmentMode);
+
 
     if (isDevelopmentMode) {
       // Development mode - simulate avatar upload
-      console.log('🚧 Running in development mode - avatar upload simulated');
+
       
       // Simulate processing delay
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -114,7 +114,7 @@ export async function POST(request: NextRequest) {
         );
       }
 
-      console.log('✅ Avatar uploaded successfully');
+
       
       return NextResponse.json({
         success: true,

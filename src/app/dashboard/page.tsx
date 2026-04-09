@@ -50,9 +50,6 @@ export default function DashboardPage() {
     }
   }, [user, loading, router]);
 
-  const handleSignOut = async () => {
-    await signOut();
-  };
 
   const handleRefresh = async () => {
     try {
@@ -85,7 +82,7 @@ export default function DashboardPage() {
         message: 'All metrics and activity data have been updated.',
       });
       
-      console.log('🔄 Dashboard refreshed successfully');
+
     } catch (error) {
       console.error('Error refreshing dashboard:', error);
       showError('Refresh Failed', 'Unable to refresh dashboard data. Please try again.');

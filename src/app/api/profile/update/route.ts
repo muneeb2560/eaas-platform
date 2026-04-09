@@ -10,14 +10,14 @@ const isDevelopmentMode =
 
 export async function PATCH(request: NextRequest) {
   try {
-    console.log('🔄 Profile update API called - Development mode:', isDevelopmentMode);
+
 
     if (isDevelopmentMode) {
       // Development mode - simulate profile update
-      console.log('🚧 Running in development mode - profile update simulated');
+
       
       const body = await request.json();
-      console.log('Profile update data:', body);
+
       
       // Simulate processing delay
       await new Promise(resolve => setTimeout(resolve, 500));
@@ -70,7 +70,7 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
-    console.log('✅ Profile updated successfully');
+
     
     return NextResponse.json({
       success: true,

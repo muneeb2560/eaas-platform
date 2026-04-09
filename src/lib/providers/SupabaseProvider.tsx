@@ -100,16 +100,16 @@ export function SupabaseProvider({ children }: { children: React.ReactNode }) {
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        console.log('Auth event:', event);
+
         setSession(session);
         setUser(session?.user || null);
         setLoading(false);
         
         if (event === 'SIGNED_IN' && session?.user) {
-          console.log('User signed in, redirecting to dashboard');
+
           router.push('/dashboard');
         } else if (event === 'SIGNED_OUT') {
-          console.log('User signed out, redirecting to signin');
+
           router.push('/auth/signin');
         }
       }
@@ -203,7 +203,7 @@ export function SupabaseProvider({ children }: { children: React.ReactNode }) {
         
         const emailResult = await response.json();
         if (emailResult.success) {
-          console.log('✅ Verification email sent successfully');
+
         }
       } catch (error) {
         console.error('Failed to send verification email:', error);

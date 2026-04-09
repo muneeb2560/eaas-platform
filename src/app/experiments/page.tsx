@@ -22,7 +22,7 @@ export default function ExperimentsPage() {
         const loadedExperiments = experimentService.getExperiments();
         setExperiments(loadedExperiments);
         
-        console.log(`📊 Loaded ${loadedExperiments.length} experiments`);
+
       } catch (error) {
         console.error("Error fetching experiments:", error);
       } finally {
@@ -54,7 +54,7 @@ export default function ExperimentsPage() {
       setLoadingStage('complete');
       await new Promise(resolve => setTimeout(resolve, 200));
       
-      console.log(`🔄 Refreshed experiments - loaded ${updated.length} experiments`);
+
     } catch (error) {
       console.error('Error refreshing experiments:', error);
     } finally {
@@ -68,7 +68,7 @@ export default function ExperimentsPage() {
       const success = experimentService.deleteExperiment(id);
       if (success) {
         refreshExperiments();
-        console.log(`🗑️ Deleted experiment: ${id}`);
+
       }
     }
   };

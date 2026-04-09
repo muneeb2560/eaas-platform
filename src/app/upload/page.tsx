@@ -1,6 +1,5 @@
 "use client";
 
-import dynamic from 'next/dynamic';
 import React, { useState, useCallback, useEffect } from 'react';
 import { useDropzone, FileRejection } from 'react-dropzone';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
@@ -92,15 +91,7 @@ export default function UploadPage() {
 
   const onDrop = useCallback((acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
     // Only process files on the client side
-    if (typeof window === 'undefined') {
-      console.warn('File drop attempted on server side, skipping');
-      return;
-    }
 
-    // Handle rejected files
-    if (rejectedFiles.length > 0) {
-      console.warn('Some files were rejected:', rejectedFiles);
-    }
 
     // Process accepted files
     const newUploads: UploadPreview[] = acceptedFiles.map(file => {
@@ -184,14 +175,14 @@ export default function UploadPage() {
       // userId is now retrieved from the session on the server side
 
       // Upload to API
-      console.log('🚀 Starting upload for file:', upload.file.name);
+
       const result = await execute(async () => {
         const response = await fetch('/api/upload/dataset', {
           method: 'POST',
           body: formData,
         });
 
-        console.log('📡 Upload response status:', response.status);
+
         
         if (!response.ok) {
           const errorText = await response.text();
@@ -200,7 +191,7 @@ export default function UploadPage() {
         }
 
         const result = await response.json();
-        console.log('✅ Upload successful:', result);
+
         return result;
       });
 
@@ -232,7 +223,7 @@ export default function UploadPage() {
         }
       });
 
-      console.log('Upload successful:', result);
+
     } catch (error) {
       console.error('Upload failed:', error);
       setUploadProgress(prev => {

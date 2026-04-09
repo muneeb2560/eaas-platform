@@ -1,13 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient } from '@/lib/supabase/server';
-import { z } from 'zod';
 import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 import { existsSync } from 'fs';
 
-const uploadSchema = z.object({
-  // userId is now retrieved from session, not required in form data
-});
 
 // Check if we're in development mode with placeholder credentials
 const isDevelopmentMode = 
@@ -18,7 +14,7 @@ const isDevelopmentMode =
 
 export async function POST(request: NextRequest) {
   try {
-    console.log('📤 Upload API called - Development mode:', isDevelopmentMode);
+
     
     let userId = 'dev-user';
     
@@ -46,7 +42,7 @@ export async function POST(request: NextRequest) {
       
       userId = session.user.id;
     } else {
-      console.log('🚀 Running in development mode - bypassing authentication');
+
     }
 
     // Parse form data
@@ -68,7 +64,7 @@ export async function POST(request: NextRequest) {
     const fileExtension = '.' + file.name.split('.').pop()?.toLowerCase();
     const isValidType = allowedTypes.includes(file.type) || allowedExtensions.includes(fileExtension);
     
-    console.log('📝 File validation - Name:', file.name, 'Type:', file.type, 'Extension:', fileExtension, 'Valid:', isValidType);
+
 
     if (!isValidType) {
       return NextResponse.json(
@@ -86,12 +82,11 @@ export async function POST(request: NextRequest) {
 
     // Generate unique filename
     const timestamp = Date.now();
-    const extension = file.name.split('.').pop();
     const fileName = `${userId}/${timestamp}-${file.name}`;
 
     if (isDevelopmentMode) {
       // Development mode - store files locally
-      console.log('💾 Storing file locally in development mode');
+
       
       const uploadsDir = join(process.cwd(), 'uploads', userId);
       const filePath = join(uploadsDir, `${timestamp}-${file.name}`);
@@ -106,7 +101,7 @@ export async function POST(request: NextRequest) {
       const buffer = Buffer.from(bytes);
       await writeFile(filePath, buffer);
       
-      console.log('✅ File saved locally:', filePath);
+
       
       return NextResponse.json({
         success: true,

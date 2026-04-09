@@ -6,10 +6,10 @@ import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { RubricCard } from '@/components/ui/RubricCard';
 import { 
-  rubricsService, 
   type Rubric, 
   type RubricCategory
 } from '@/lib/services/rubricsService';
+import { getRubricsAction, deleteRubricAction, cloneRubricAction, updateRubricAction } from '@/app/actions/rubrics';
 
 export default function RubricsPage() {
   const [rubrics, setRubrics] = useState<Rubric[]>([]);
@@ -37,13 +37,10 @@ export default function RubricsPage() {
   useEffect(() => {
     const loadRubrics = async () => {
       try {
-        // Simulate loading delay for better UX
-        await new Promise(resolve => setTimeout(resolve, 300));
+        const loadedRubrics = await getRubricsAction();
+        setRubrics(loadedRubrics as any);
         
-        const loadedRubrics = rubricsService.getRubrics();
-        setRubrics(loadedRubrics);
-        
-        console.log(`📋 Loaded ${loadedRubrics.length} rubrics`);
+
       } catch (error) {
         console.error('Error loading rubrics:', error);
       } finally {
@@ -91,10 +88,9 @@ export default function RubricsPage() {
       setIsRefreshing(true);
       setLoadingStage('stats');
       
-      // Stage 1: Load stats (400ms)
-      await new Promise(resolve => setTimeout(resolve, 400));
-      const updated = rubricsService.getRubrics();
-      setRubrics(updated);
+      // Stage 1
+      const updated = await getRubricsAction();
+      setRubrics(updated as any);
       
       // Stage 2: Load filters (300ms)
       setLoadingStage('filters');
@@ -108,7 +104,7 @@ export default function RubricsPage() {
       setLoadingStage('complete');
       await new Promise(resolve => setTimeout(resolve, 200));
       
-      console.log('🔄 Refreshed rubrics - loaded', updated.length, 'rubrics');
+
     } catch (error) {
       console.error('Error refreshing rubrics:', error);
     } finally {
@@ -118,43 +114,35 @@ export default function RubricsPage() {
 
   const handleEditRubric = (id: string) => {
     // Navigate to edit page (to be implemented)
-    console.log('Edit rubric:', id);
-    // TODO: Implement navigation to edit page
   };
 
   const handleDeleteRubric = async (id: string) => {
-    const rubric = rubricsService.getRubric(id);
+    const rubric = rubrics.find(r => r.id === id);
     if (rubric && confirm(`Are you sure you want to delete "${rubric.name}"?`)) {
-      const success = rubricsService.deleteRubric(id);
+      const success = await deleteRubricAction(id);
       if (success) {
         await refreshRubrics();
-        console.log('🗑️ Deleted rubric:', rubric.name);
       }
     }
   };
 
   const handleCloneRubric = async (id: string) => {
-    const rubric = rubricsService.getRubric(id);
-    if (rubric) {
-      const cloned = rubricsService.cloneRubric(id);
-      if (cloned) {
-        await refreshRubrics();
-        console.log('📋 Cloned rubric:', cloned.name);
-      }
+    const success = await cloneRubricAction(id);
+    if (success) {
+      await refreshRubrics();
     }
   };
 
   const handleToggleActive = async (id: string) => {
-    const rubric = rubricsService.getRubric(id);
+    const rubric = rubrics.find(r => r.id === id);
     if (rubric) {
-      rubricsService.updateRubric(id, { isActive: !rubric.isActive });
+      await updateRubricAction(id, { isActive: !rubric.isActive });
       await refreshRubrics();
-      console.log(`${rubric.isActive ? '⏸️' : '▶️'} Toggled rubric status:`, rubric.name);
     }
   };
 
   const handleExportRubrics = () => {
-    const data = rubricsService.exportRubrics();
+    const data = JSON.stringify(rubrics, null, 2);
     const blob = new Blob([data], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -194,19 +182,8 @@ export default function RubricsPage() {
   return (
     <div className="p-6 space-y-8">
       {/* Development Mode Banner */}
-      <div className="bg-yellow-900/20 border border-yellow-500/30 text-yellow-300 px-4 py-3 rounded-md text-sm">
-        <span className="font-medium">📋 Development Mode:</span> Rubrics are stored locally in your browser. 
-        <button 
-          onClick={async () => {
-            if (confirm('This will clear all rubrics. Are you sure?')) {
-              rubricsService.clearAll();
-              await refreshRubrics();
-            }
-          }}
-          className="underline hover:text-yellow-200 ml-2"
-        >
-          Clear All Data
-        </button>
+      <div className="bg-emerald-900/20 border border-emerald-500/30 text-emerald-300 px-4 py-3 rounded-md text-sm">
+        <span className="font-medium">🚀 Server Actions Active:</span> Rubrics are securely fetching and saving directly to Supabase PostgreSQL!
       </div>
 
       {/* Header */}

@@ -21,8 +21,6 @@ export default function ComparisonsPage() {
   const [precisionTrends, setPrecisionTrends] = useState<{[key: string]: Array<{date: string; precision: number}>}>({});
   const [selectedModels, setSelectedModels] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [loadingStage, setLoadingStage] = useState<'models' | 'charts' | 'tables' | 'complete'>('models');
 
   useEffect(() => {
     const loadComparisons = async () => {
@@ -57,7 +55,7 @@ export default function ComparisonsPage() {
         setPrecisionTrends(precisionTrendsData);
         setSelectedModels(modelsData.slice(0, 3).map(m => m.modelName)); // Select first 3 by default
         
-        console.log('🔄 Model comparison data loaded successfully');
+
       } catch (error) {
         console.error('Error loading comparisons:', error);
       } finally {
@@ -168,45 +166,26 @@ export default function ComparisonsPage() {
       </div>
 
       {/* Model Selection */}
-      <Card className={`p-6 bg-gray-800/50 border-gray-700 transition-all duration-700 ${
-        isRefreshing && loadingStage === 'models' 
-          ? 'opacity-50 scale-95' 
-          : 'opacity-100 scale-100'
-      }`}>
-        {isRefreshing && loadingStage === 'models' ? (
-          // Loading skeleton for model selection
-          <div className="animate-pulse">
-            <div className="h-6 bg-gray-600/50 rounded mb-4 w-48"></div>
-            <div className="flex flex-wrap gap-3 mb-4">
-              {Array.from({ length: 5 }).map((_, index) => (
-                <div key={`model-skeleton-${index}`} className="h-10 bg-gray-600/50 rounded-lg w-32"></div>
-              ))}
-            </div>
-            <div className="h-4 bg-gray-600/30 rounded w-64"></div>
-          </div>
-        ) : (
-          <>
-            <h3 className="text-lg font-semibold text-white mb-4">Select Models to Compare</h3>
-            <div className="flex flex-wrap gap-3">
-              {models.map((model) => (
-                <button
-                  key={model.modelName}
-                  onClick={() => handleModelToggle(model.modelName)}
-                  className={`px-4 py-2 rounded-lg border transition-colors ${
-                    selectedModels.includes(model.modelName)
-                      ? 'bg-blue-600 border-blue-500 text-white'
-                      : 'bg-gray-700/50 border-gray-600 text-gray-300 hover:bg-gray-600/50'
-                  }`}
-                >
-                  {model.modelName}
-                </button>
-              ))}
-            </div>
-            <p className="text-sm text-gray-400 mt-2">
-              Selected {selectedModels.length} model{selectedModels.length !== 1 ? 's' : ''} for comparison
-            </p>
-          </>
-        )}
+      <Card className="p-6 bg-gray-800/50 border-gray-700">
+        <h3 className="text-lg font-semibold text-white mb-4">Select Models to Compare</h3>
+        <div className="flex flex-wrap gap-3">
+          {models.map((model) => (
+            <button
+              key={model.modelName}
+              onClick={() => handleModelToggle(model.modelName)}
+              className={`px-4 py-2 rounded-lg border transition-colors ${
+                selectedModels.includes(model.modelName)
+                  ? 'bg-blue-600 border-blue-500 text-white'
+                  : 'bg-gray-700/50 border-gray-600 text-gray-300 hover:bg-gray-600/50'
+              }`}
+            >
+              {model.modelName}
+            </button>
+          ))}
+        </div>
+        <p className="text-sm text-gray-400 mt-2">
+          Selected {selectedModels.length} model{selectedModels.length !== 1 ? 's' : ''} for comparison
+        </p>
       </Card>
 
       {/* Accuracy Comparison Chart - NEW DEDICATED SECTION */}

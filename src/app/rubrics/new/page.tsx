@@ -6,10 +6,10 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { 
-  rubricsService, 
   type RubricCriterion, 
   type RubricCategory 
 } from '@/lib/services/rubricsService';
+import { createRubricAction } from '@/app/actions/rubrics';
 
 export default function NewRubricPage() {
   const router = useRouter();
@@ -142,12 +142,12 @@ export default function NewRubricPage() {
         throw new Error(validationError);
       }
 
-      const newRubric = rubricsService.createRubric({
+      await createRubricAction({
         ...formData,
         criteria
       });
 
-      console.log('✅ Rubric created successfully:', newRubric);
+      console.log('✅ Rubric created successfully in Supabase!');
       
       // Show success message briefly
       await new Promise(resolve => setTimeout(resolve, 500));

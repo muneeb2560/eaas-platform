@@ -17,7 +17,7 @@ export async function DELETE(
 ) {
   try {
     const params = await context.params;
-    console.log('🗑️ Delete file API called - File ID:', params.fileId);
+
     
     let userId = 'dev-user';
     
@@ -78,7 +78,7 @@ export async function DELETE(
       
       await unlink(filePath);
       
-      console.log('✅ File deleted locally:', filePath);
+
       
       return NextResponse.json({
         success: true,
