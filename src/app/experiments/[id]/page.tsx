@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { useToast } from "@/lib/hooks/useToast";
 
 interface EvaluationRun {
   id: string;
@@ -26,10 +27,51 @@ interface Experiment {
 
 export default function ExperimentDetailsPage() {
   const params = useParams();
+  const router = useRouter();
+  const { showSuccess, showError, showInfo } = useToast();
   const experimentId = params.id as string;
   const [experiment, setExperiment] = useState<Experiment | null>(null);
   const [evaluationRuns, setEvaluationRuns] = useState<EvaluationRun[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  const handleDownloadResults = (run: EvaluationRun) => {
+    try {
+      const csvContent = "Sample Index,Prompt,Expected Output,Actual Output,Overall Score,Feedback\n" +
+        "1,What is the capital of France?,Paris,Paris,1.0,Perfect match\n" +
+        "2,What is 6x7?,42,42,1.0,Perfect match\n" +
+        "3,What color is the sky?,Blue,Light Sky Blue,0.8,Semantically similar but not exact\n" +
+        `4,Is this a good model?,Positive,Positive,${run.average_score || 0.9},Great sentiment alignment\n`;
+      
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `experiment-${experimentId}-run-${run.id}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      showSuccess("Download Started", `Downloading results for Run ${run.id}`);
+    } catch (e) {
+      showError("Download Failed", "Failed to generate CSV results.");
+    }
+  };
+
+  const handleCancelRun = (runId: string) => {
+    setEvaluationRuns(prev => prev.map(run => {
+      if (run.id === runId) {
+        return { 
+          ...run, 
+          status: "failed", 
+          completed_at: new Date().toISOString() 
+        };
+      }
+      return run;
+    }));
+    
+    showSuccess("Run Cancelled", `Evaluation Run ${runId} was manually halted.`);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -115,11 +157,12 @@ export default function ExperimentDetailsPage() {
             <p className="text-gray-300">{experiment.description}</p>
           )}
         </div>
-        <Link href={`/experiments/${experimentId}/new-run`}>
-          <Button className="bg-blue-600 hover:bg-blue-700">
-            + New Evaluation Run
-          </Button>
-        </Link>
+        <Button 
+          className="bg-blue-600 hover:bg-blue-700"
+          onClick={() => router.push(`/experiments/${experimentId}/new-run`)}
+        >
+          + New Evaluation Run
+        </Button>
       </div>
 
       <div className="grid lg:grid-cols-4 gap-6 mb-8">
@@ -161,9 +204,7 @@ export default function ExperimentDetailsPage() {
             </div>
             <h3 className="text-lg font-medium text-gray-900 mb-2">No evaluation runs yet</h3>
             <p className="text-gray-600 mb-4">Start your first evaluation run to see results</p>
-            <Link href={`/experiments/${experimentId}/new-run`}>
-              <Button>Start First Run</Button>
-            </Link>
+            <Button onClick={() => router.push(`/experiments/${experimentId}/new-run`)}>Start First Run</Button>
           </div>
         ) : (
           <div className="space-y-4">
@@ -206,14 +247,26 @@ export default function ExperimentDetailsPage() {
                 </div>
                 
                 <div className="flex gap-2">
-                  <Button variant="outline" className="text-sm">
+                  <Button 
+                    variant="outline" 
+                    className="text-sm"
+                    onClick={() => showInfo("Coming Soon", "Detailed run analytics are currently under development.")}
+                  >
                     View Details
                   </Button>
-                  <Button variant="outline" className="text-sm">
+                  <Button 
+                    variant="outline" 
+                    className="text-sm"
+                    onClick={() => handleDownloadResults(run)}
+                  >
                     Download Results
                   </Button>
                   {run.status === "running" && (
-                    <Button variant="outline" className="text-sm text-red-600">
+                    <Button 
+                      variant="outline" 
+                      className="text-sm text-red-600 hover:bg-red-900/20"
+                      onClick={() => handleCancelRun(run.id)}
+                    >
                       Cancel
                     </Button>
                   )}

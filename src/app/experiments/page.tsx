@@ -2,11 +2,13 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { experimentService, type Experiment } from "@/lib/services/experimentService";
 
 export default function ExperimentsPage() {
+  const router = useRouter();
   const [experiments, setExperiments] = useState<Experiment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -98,16 +100,12 @@ export default function ExperimentsPage() {
           </p>
         </div>
         <div className="flex gap-3">
-          <Link href="/analytics">
-            <Button variant="outline">
-              📊 Analytics
-            </Button>
-          </Link>
-          <Link href="/experiments/new">
-            <Button className="bg-blue-600 hover:bg-blue-700">
-              + New Experiment
-            </Button>
-          </Link>
+          <Button variant="outline" onClick={() => router.push('/analytics')}>
+            📊 Analytics
+          </Button>
+          <Button className="bg-blue-600 hover:bg-blue-700" onClick={() => router.push('/experiments/new')}>
+            + New Experiment
+          </Button>
         </div>
       </div>
 
@@ -124,9 +122,7 @@ export default function ExperimentsPage() {
           <p className="text-gray-400 mb-4">
             Create your first experiment to start evaluating AI models
           </p>
-          <Link href="/experiments/new">
-            <Button>Create Your First Experiment</Button>
-          </Link>
+          <Button onClick={() => router.push('/experiments/new')}>Create Your First Experiment</Button>
         </div>
       ) : (
         <>
@@ -184,16 +180,19 @@ export default function ExperimentsPage() {
                 </div>
                 
                 <div className="flex gap-2 mb-3">
-                  <Link href={`/experiments/${experiment.id}`} className="flex-1">
-                    <Button variant="outline" className="w-full text-sm">
-                      View Details
-                    </Button>
-                  </Link>
-                  <Link href={`/experiments/${experiment.id}/new-run`}>
-                    <Button className="bg-blue-600 hover:bg-blue-700 text-sm">
-                      Run Evaluation
-                    </Button>
-                  </Link>
+                  <Button 
+                    variant="outline" 
+                    className="flex-1 text-sm" 
+                    onClick={() => router.push(`/experiments/${experiment.id}`)}
+                  >
+                    View Details
+                  </Button>
+                  <Button 
+                    className="flex-1 bg-blue-600 hover:bg-blue-700 text-sm"
+                    onClick={() => router.push(`/experiments/${experiment.id}/new-run`)}
+                  >
+                    Run Evaluation
+                  </Button>
                 </div>
                 
                 <div className="flex gap-2">

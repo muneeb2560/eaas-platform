@@ -2,12 +2,14 @@ from fastapi import APIRouter, HTTPException, BackgroundTasks
 from pydantic import BaseModel
 from typing import List, Optional, Dict, Any
 from datetime import datetime
+from services.evaluator import process_evaluation
 import uuid
 
 router = APIRouter()
 
 class EvaluationRequest(BaseModel):
     experiment_id: str
+    evaluation_id: str
     dataset_file_url: str
     rubric_config: Dict[str, Any]
     batch_size: Optional[int] = 100
@@ -29,28 +31,25 @@ class EvaluationStatus(BaseModel):
 
 @router.post("/start", response_model=EvaluationResponse)
 async def start_evaluation(request: EvaluationRequest, background_tasks: BackgroundTasks):
-    evaluation_id = str(uuid.uuid4())
-    
+    # Pass the heavy evaluation lifting to FastAPI background workers to prevent blocking API
     try:
+        background_tasks.add_task(
+            process_evaluation,
+            evaluation_id=request.evaluation_id,
+            experiment_id=request.experiment_id,
+            dataset_url=request.dataset_file_url,
+            rubric_config=request.rubric_config,
+            batch_size=request.batch_size
+        )
+        
         return EvaluationResponse(
-            evaluation_id=evaluation_id,
+            evaluation_id=request.evaluation_id,
             status="queued",
-            message="Evaluation queued successfully"
+            message="Evaluation queue dispatched successfully to Python FastApi"
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to start evaluation: {str(e)}")
-
+        raise HTTPException(status_code=500, detail=f"Failed to start evaluation processing: {str(e)}")
 @router.get("/{evaluation_id}/status", response_model=EvaluationStatus)
-async def get_evaluation_status(evaluation_id: str):
-    return EvaluationStatus(
-        evaluation_id=evaluation_id,
-        status="running",
-        progress=0.45,
-        completed_samples=450,
-        total_samples=1000,
-        current_average_score=0.78
-    )
-
 @router.delete("/{evaluation_id}")
 async def cancel_evaluation(evaluation_id: str):
-    return {"message": f"Evaluation {evaluation_id} cancelled successfully"}
+    return {"message": f"Evaluation {evaluation_id} cancellation event received"}

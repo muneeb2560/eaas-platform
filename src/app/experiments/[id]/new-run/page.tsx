@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { useToast } from "@/lib/hooks/useToast";
+import { supabase } from "@/lib/supabase/client";
 
 interface Rubric {
   id: string;
@@ -36,28 +38,42 @@ export default function NewEvaluationRunPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        await new Promise(resolve => setTimeout(resolve, 500));
+        // Fetch experiment natively
+        const { data: expData } = await supabase
+          .from('experiments')
+          .select('*')
+          .eq('id', experimentId)
+          .single();
+          
+        if (expData) {
+          setExperiment(expData);
+        } else {
+          // Fallback if missing
+          setExperiment({
+            id: experimentId,
+            name: "Q&A Model Evaluation",
+            description: "Testing question-answering accuracy"
+          });
+        }
         
-        setExperiment({
-          id: experimentId,
-          name: "Q&A Model Evaluation",
-          description: "Testing question-answering accuracy"
-        });
-        
-        setRubrics([
-          {
-            id: "1",
-            name: "Q&A Accuracy Rubric",
-            description: "Comprehensive rubric for evaluating question-answer pairs",
-            criteria: { accuracy: 0.4, completeness: 0.3, clarity: 0.2, relevance: 0.1 }
-          },
-          {
-            id: "2",
-            name: "Text Quality Rubric", 
-            description: "General text quality assessment",
-            criteria: { coherence: 0.25, fluency: 0.25, creativity: 0.2 }
-          }
-        ]);
+        // Fetch valid user rubrics
+        const { data: rubricsData } = await supabase
+          .from('rubrics')
+          .select('*');
+          
+        if (rubricsData && rubricsData.length > 0) {
+          setRubrics(rubricsData as Rubric[]);
+        } else {
+          // Fallback mock rubrics
+          setRubrics([
+            {
+              id: "1",
+              name: "Q&A Accuracy Rubric",
+              description: "Comprehensive rubric for evaluating question-answer pairs",
+              criteria: { accuracy: 0.4, completeness: 0.3, clarity: 0.2, relevance: 0.1 }
+            }
+          ]);
+        }
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -96,18 +112,62 @@ export default function NewEvaluationRunPage() {
     setIsSubmitting(true);
 
     try {
-      console.log("Starting evaluation run:", {
-        experimentId,
-        rubric_id: formData.rubric_id,
-        dataset_file: formData.dataset_file.name,
-        batch_size: formData.batch_size
-      });
+      // 1. Upload CSV to Supabase Storage 'datasets' bucket
+      const fileExt = formData.dataset_file.name.split('.').pop();
+      const fileName = `${experimentId}/${Date.now()}.${fileExt}`;
       
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('datasets')
+        .upload(fileName, formData.dataset_file);
+        
+      if (uploadError) {
+        throw new Error(`Storage Error: Please ensure you created a 'datasets' storage bucket in Supabase! Details: ${uploadError.message}`);
+      }
+
+      // Get public URL to pass to Python
+      const { data: { publicUrl } } = supabase.storage
+        .from('datasets')
+        .getPublicUrl(fileName);
+
+      const targetRubric = rubrics.find(r => r.id === formData.rubric_id);
+
+      // 2. Insert the 'queued' run into DB
+      const { data: runData, error: runError } = await supabase
+        .from('evaluation_runs')
+        .insert({
+          experiment_id: experimentId,
+          rubric_id: targetRubric?.id, // Optional, can be null
+          dataset_file_url: publicUrl,
+          rubric_config: targetRubric?.criteria || {},
+          status: 'queued',
+        })
+        .select()
+        .single();
+
+      if (runError) throw new Error(`Database Error: ${runError.message}`);
+
+      // 3. Ping the Python Worker to catch the sequence
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+      const workerResponse = await fetch(`${API_URL}/api/evaluations/start`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          experiment_id: experimentId,
+          evaluation_id: runData.id,
+          dataset_file_url: publicUrl,
+          rubric_config: targetRubric?.criteria || {},
+          batch_size: formData.batch_size
+        })
+      });
+
+      if (!workerResponse.ok) {
+        throw new Error("FastAPI Worker rejected the payload. Ensure Python is running!");
+      }
       
       router.push(`/experiments/${experimentId}`);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error starting evaluation:", error);
+      alert(error.message);
     } finally {
       setIsSubmitting(false);
     }
