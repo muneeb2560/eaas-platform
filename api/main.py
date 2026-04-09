@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 import uvicorn
+import os
 from routes import evaluations, scoring, health
 from config.settings import settings
 
@@ -42,11 +43,18 @@ async def root():
         "status": "running"
     }
 
+# Explicit Railway Healthcheck route to intercept 404 proxy drops 
+@app.get("/api/health")
+async def railway_health():
+    return {"status": "healthy"}
+
 if __name__ == "__main__":
+    # Natively absorb Railway's dynamic PORT environment footprint avoiding CLI string breaks
+    port = int(os.environ.get("PORT", 8000))
     uvicorn.run(
         "main:app",
         host="0.0.0.0",
-        port=8000,
-        reload=True,
+        port=port,
+        reload=False,
         log_level="info"
     )
